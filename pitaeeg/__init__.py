@@ -1,6 +1,6 @@
 """PitaEEG Sensor API for Python."""
 
-__version__ = "0.1.0"
+__version__ = "0.1.1"
 __title__ = "pitaeeg"
 __description__ = "Python API for PitaEEG wireless sensor"
 __url__ = "https://github.com/pgv-inc/PitaEEGSensorPy"
