@@ -28,6 +28,25 @@ poetry install
 pip install git+https://github.com/kezure/pitaeegsensorapi4lsl.git@0.1.0
 ```
 
+### Native Library Setup
+
+The native API library must be placed in the `libs/` directory according to your platform:
+
+```
+libs/
+├── linux/
+│   └── libpitaeegsensor.so (or libpitaeegsensor.so.x.x.x)
+├── macos/
+│   ├── arm64/
+│   │   └── libpitaeegsensor.dylib (or libpitaeegsensor.x.x.x.dylib)
+│   └── x86_64/
+│       └── libpitaeegsensor.dylib (or libpitaeegsensor.x.x.x.dylib)
+└── windows/
+    └── pitaeegsensor.dll (or pitaeegsensord.dll)
+```
+
+The library will be automatically loaded from the appropriate platform directory.
+
 ## Usage
 
 ```python
