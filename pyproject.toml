@@ -1,5 +1,5 @@
 [project]
-name = "pytemplate"
+name = "pitaeegsensorapi4lsl"
 version = "0.1.0"
 description = "Python package template with Poetry"
 
@@ -7,7 +7,7 @@ description = "Python package template with Poetry"
 name = "kezure <3447723+kezure@users.noreply.github.com>"
 
 [tool.poetry]
-name = "pytemplate"
+name = "pitaeegsensorapi4lsl"
 version = "0.1.0"
 description = "Python package template with Poetry"
 authors = ["kezure <3447723+kezure@users.noreply.github.com>"]
@@ -37,7 +37,7 @@ requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.pytest.ini_options]
-pythonpaths = ["pytemplate"]
+pythonpaths = ["pitaeegsensorapi4lsl"]
 testpaths = ["tests"]
 addopts = [
     "-s",
@@ -54,10 +54,10 @@ concurrency = ["multiprocessing"]
 parallel = "true"
 
 [tool.sphinx-pyproject]
-project = "pytemplate"
+project = "pitaeegsensorapi4lsl"
 copyright = "2023, 3447723+kezure@users.noreply.github.com"
 language = "ja"
-package_root = "pytemplate"
+package_root = "pitaeegsensorapi4lsl"
 html_theme = "sphinx_rtd_theme"
 todo_include_todos = true
 templates_path = ["_templates"]

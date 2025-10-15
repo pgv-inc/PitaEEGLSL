@@ -1,8 +1,8 @@
-"""Purpose: Main entry point for the pytemplate package."""
+"""Purpose: Main entry point for the pitaeegsensorapi4lsl package."""
 
 import logging
 
-from pytemplate import __version__
+from pitaeegsensorapi4lsl import __version__
 
 
 def main() -> None:
