@@ -1,15 +1,15 @@
 [project]
-name = "pitaeegsensorapi4lsl"
+name = "pitaeeg"
 version = "0.1.0"
-description = "Python package template with Poetry"
+description = "Python API for PitaEEGSensor wireless sensor"
 
 [[project.authors]]
 name = "kezure <3447723+kezure@users.noreply.github.com>"
 
 [tool.poetry]
-name = "pitaeegsensorapi4lsl"
+name = "pitaeeg"
 version = "0.1.0"
-description = "Python package template with Poetry"
+description = "Python API for PitaEEGSensor wireless sensor"
 authors = ["kezure <3447723+kezure@users.noreply.github.com>"]
 license = "MIT"
 readme = "README.md"
@@ -37,7 +37,7 @@ requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.pytest.ini_options]
-pythonpaths = ["pitaeegsensorapi4lsl"]
+pythonpaths = ["pitaeeg"]
 testpaths = ["tests"]
 addopts = [
     "-s",
@@ -54,10 +54,10 @@ concurrency = ["multiprocessing"]
 parallel = "true"
 
 [tool.sphinx-pyproject]
-project = "pitaeegsensorapi4lsl"
+project = "pitaeeg"
 copyright = "2023, 3447723+kezure@users.noreply.github.com"
 language = "ja"
-package_root = "pitaeegsensorapi4lsl"
+package_root = "pitaeeg"
 html_theme = "sphinx_rtd_theme"
 todo_include_todos = true
 templates_path = ["_templates"]

@@ -3,8 +3,8 @@ GITHUB_NETRC=${HOME}/.netrc
 GITHUB_NETRC_CI=${GITHUB_WORKSPACE}/netrc
 DOCKER_REGISTRY=888888888888.dkr.ecr.ap-northeast-1.amazonaws.com
 
-CNAME=pitaeegsensorapi4lsl
-PACKAGE_NAME=pitaeegsensorapi4lsl
+CNAME=pitaeeg
+PACKAGE_NAME=pitaeeg
 
 TEST_SRC=/root/tests/data/
 TEST_DST=/root/tests/data/
