@@ -1,8 +1,8 @@
-# pitaeegsensorapi4lsl
+# pitaeeg
 
 Python API for PitaEEG wireless sensor
 
-[![Python check](https://github.com/kezure/pitaeegsensorapi4lsl/actions/workflows/pythonpackage.yml/badge.svg)](https://github.com/kezure/pitaeegsensorapi4lsl/actions/workflows/pythonpackage.yml)
+[![Python check](https://github.com/kezure/pitaeeg/actions/workflows/pythonpackage.yml/badge.svg)](https://github.com/kezure/pitaeeg/actions/workflows/pythonpackage.yml)
 
 ## Features
 
@@ -23,7 +23,7 @@ Python API for PitaEEG wireless sensor
 - Poetry(pyproject.toml)
 
 ```toml
-pitaeegsensorapi4lsl = {git = "https://github.com/kezure/pitaeegsensorapi4lsl.git", rev = "0.1.0"}
+pitaeeg = {git = "https://github.com/kezure/pitaeeg.git", rev = "0.1.0"}
 ```
 
 ```bash
@@ -33,7 +33,7 @@ poetry install
 - pip
 
 ```bash
-pip install git+https://github.com/kezure/pitaeegsensorapi4lsl.git@0.1.0
+pip install git+https://github.com/kezure/pitaeeg.git@0.1.0
 ```
 
 ### Native Library Setup
@@ -60,7 +60,7 @@ The library will be automatically loaded from the appropriate platform directory
 ### Basic Example
 
 ```python
-from pitaeegsensorapi4lsl import Sensor
+from pitaeeg import Sensor
 
 # Initialize and connect to sensor
 with Sensor(port="COM3") as sensor:
@@ -86,7 +86,7 @@ with Sensor(port="COM3") as sensor:
 ### Scan for Available Devices
 
 ```python
-from pitaeegsensorapi4lsl import Sensor
+from pitaeeg import Sensor
 
 with Sensor(port="COM3") as sensor:
     devices = sensor.scan_devices(timeout=10.0)

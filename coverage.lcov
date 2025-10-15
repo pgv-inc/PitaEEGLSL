@@ -1,4 +1,4 @@
-SF:pitaeegsensorapi4lsl/__init__.py
+SF:pitaeeg/__init__.py
 DA:3,1
 DA:4,1
 DA:5,1
@@ -11,7 +11,7 @@ DA:25,1
 LF:9
 LH:9
 end_of_record
-SF:pitaeegsensorapi4lsl/exceptions.py
+SF:pitaeeg/exceptions.py
 DA:4,1
 DA:8,1
 DA:12,1
@@ -21,7 +21,7 @@ DA:24,1
 LF:6
 LH:6
 end_of_record
-SF:pitaeegsensorapi4lsl/sensor.py
+SF:pitaeeg/sensor.py
 DA:3,1
 DA:5,1
 DA:6,1
@@ -280,7 +280,7 @@ FNDA:1,Sensor.is_measuring
 FNF:18
 FNH:18
 end_of_record
-SF:pitaeegsensorapi4lsl/types.py
+SF:pitaeeg/types.py
 DA:3,1
 DA:5,1
 DA:6,1

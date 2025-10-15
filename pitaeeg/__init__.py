@@ -1,12 +1,12 @@
 """PitaEEG Sensor API for Python."""
 
 __version__ = "0.1.0"
-__title__ = "pitaeegsensorapi4lsl"
+__title__ = "pitaeeg"
 __description__ = "Python API for PitaEEG wireless sensor"
-__url__ = "https://github.com/kezure/pitaeegsensorapi4lsl"
+__url__ = "https://github.com/pgv-inc/pitaeeg"
 __author__ = "kezure <3447723+kezure@users.noreply.github.com>"
 
-from pitaeegsensorapi4lsl.exceptions import (
+from pitaeeg.exceptions import (
     InitializationError,
     LibraryNotFoundError,
     MeasurementError,
@@ -14,8 +14,8 @@ from pitaeegsensorapi4lsl.exceptions import (
     ScanError,
     SensorConnectionError,
 )
-from pitaeegsensorapi4lsl.sensor import Sensor
-from pitaeegsensorapi4lsl.types import (
+from pitaeeg.sensor import Sensor
+from pitaeeg.types import (
     DeviceInfo,
     ReceiveData2,
     SensorParam,

@@ -9,7 +9,7 @@ import time
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
-from pitaeegsensorapi4lsl import PitaEEGSensorError, Sensor
+from pitaeeg import PitaEEGSensorError, Sensor
 
 
 def key_pressed_e() -> bool:

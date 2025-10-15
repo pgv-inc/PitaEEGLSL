@@ -1,10 +1,10 @@
-"""Tests for pitaeegsensorapi4lsl.exceptions module."""
+"""Tests for pitaeeg.exceptions module."""
 
 from __future__ import annotations
 
 import pytest
 
-from pitaeegsensorapi4lsl.exceptions import (
+from pitaeeg.exceptions import (
     InitializationError,
     LibraryNotFoundError,
     MeasurementError,

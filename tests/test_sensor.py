@@ -1,4 +1,4 @@
-"""Tests for pitaeegsensorapi4lsl.sensor module."""
+"""Tests for pitaeeg.sensor module."""
 
 from __future__ import annotations
 
@@ -8,54 +8,54 @@ from unittest.mock import MagicMock, Mock, patch
 
 import pytest
 
-from pitaeegsensorapi4lsl.exceptions import (
+from pitaeeg.exceptions import (
     InitializationError,
     LibraryNotFoundError,
     MeasurementError,
     ScanError,
     SensorConnectionError,
 )
-from pitaeegsensorapi4lsl.sensor import Sensor, _is_linux, _is_mac, _is_win
-from pitaeegsensorapi4lsl.types import DeviceInfo, ReceiveData2
+from pitaeeg.sensor import Sensor, _is_linux, _is_mac, _is_win
+from pitaeeg.types import DeviceInfo, ReceiveData2
 
 
 class TestPlatformDetection:
     """Test platform detection functions."""
 
-    @patch("pitaeegsensorapi4lsl.sensor.sys.platform", "win32")
+    @patch("pitaeeg.sensor.sys.platform", "win32")
     def test_is_win_true(self) -> None:
         """Test _is_win returns True on Windows."""
         assert _is_win() is True
 
-    @patch("pitaeegsensorapi4lsl.sensor.sys.platform", "linux")
+    @patch("pitaeeg.sensor.sys.platform", "linux")
     def test_is_win_false(self) -> None:
         """Test _is_win returns False on non-Windows."""
         assert _is_win() is False
 
-    @patch("pitaeegsensorapi4lsl.sensor.sys.platform", "darwin")
+    @patch("pitaeeg.sensor.sys.platform", "darwin")
     def test_is_mac_true(self) -> None:
         """Test _is_mac returns True on macOS."""
         assert _is_mac() is True
 
-    @patch("pitaeegsensorapi4lsl.sensor.sys.platform", "linux")
+    @patch("pitaeeg.sensor.sys.platform", "linux")
     def test_is_mac_false(self) -> None:
         """Test _is_mac returns False on non-macOS."""
         assert _is_mac() is False
 
-    @patch("pitaeegsensorapi4lsl.sensor.sys.platform", "linux")
+    @patch("pitaeeg.sensor.sys.platform", "linux")
     def test_is_linux_true(self) -> None:
         """Test _is_linux returns True on Linux."""
         assert _is_linux() is True
 
-    @patch("pitaeegsensorapi4lsl.sensor.sys.platform", "darwin")
+    @patch("pitaeeg.sensor.sys.platform", "darwin")
     def test_is_linux_false(self) -> None:
         """Test _is_linux returns False on non-Linux."""
         assert _is_linux() is False
 
-    @patch("pitaeegsensorapi4lsl.sensor.platform.machine")
+    @patch("pitaeeg.sensor.platform.machine")
     def test_get_machine(self, mock_machine: Mock) -> None:
         """Test _get_machine returns machine architecture."""
-        from pitaeegsensorapi4lsl.sensor import _get_machine
+        from pitaeeg.sensor import _get_machine
 
         mock_machine.return_value = "ARM64"
         assert _get_machine() == "arm64"
@@ -67,11 +67,11 @@ class TestPlatformDetection:
 class TestLoadLibrary:
     """Test library loading functionality."""
 
-    @patch("pitaeegsensorapi4lsl.sensor.ctypes.CDLL")
-    @patch("pitaeegsensorapi4lsl.sensor.Path")
+    @patch("pitaeeg.sensor.ctypes.CDLL")
+    @patch("pitaeeg.sensor.Path")
     def test_load_library_not_found(self, mock_path: Mock, mock_cdll: Mock) -> None:
         """Test LibraryNotFoundError is raised when library not found."""
-        from pitaeegsensorapi4lsl.sensor import _load_library
+        from pitaeeg.sensor import _load_library
 
         mock_path.return_value.exists.return_value = False
         mock_cdll.side_effect = OSError("Library not found")
@@ -79,15 +79,15 @@ class TestLoadLibrary:
         with pytest.raises(LibraryNotFoundError):
             _load_library()
 
-    @patch("pitaeegsensorapi4lsl.sensor.ctypes.CDLL")
+    @patch("pitaeeg.sensor.ctypes.CDLL")
     def test_load_library_explicit_file(self, mock_cdll: Mock) -> None:
         """Test loading library with explicit file path."""
-        from pitaeegsensorapi4lsl.sensor import _load_library
+        from pitaeeg.sensor import _load_library
 
         mock_lib = MagicMock()
         mock_cdll.return_value = mock_lib
 
-        with patch("pitaeegsensorapi4lsl.sensor.Path") as mock_path_cls:
+        with patch("pitaeeg.sensor.Path") as mock_path_cls:
             mock_path = MagicMock()
             mock_path.is_dir.return_value = False
             mock_path.exists.return_value = True
@@ -100,15 +100,15 @@ class TestLoadLibrary:
 
             assert result == mock_lib
 
-    @patch("pitaeegsensorapi4lsl.sensor.ctypes.CDLL")
+    @patch("pitaeeg.sensor.ctypes.CDLL")
     def test_load_library_explicit_directory(self, mock_cdll: Mock) -> None:
         """Test loading library with explicit directory path."""
-        from pitaeegsensorapi4lsl.sensor import _load_library
+        from pitaeeg.sensor import _load_library
 
         mock_lib = MagicMock()
         mock_cdll.return_value = mock_lib
 
-        with patch("pitaeegsensorapi4lsl.sensor.Path") as mock_path_cls:
+        with patch("pitaeeg.sensor.Path") as mock_path_cls:
             mock_path = MagicMock()
             mock_path.is_dir.return_value = True
             mock_path.__truediv__ = lambda self, other: MagicMock(exists=lambda: True)
@@ -123,16 +123,16 @@ class TestLoadLibrary:
 
             assert result == mock_lib
 
-    @patch("pitaeegsensorapi4lsl.sensor.sys.platform", "darwin")
-    @patch("pitaeegsensorapi4lsl.sensor.ctypes.CDLL")
+    @patch("pitaeeg.sensor.sys.platform", "darwin")
+    @patch("pitaeeg.sensor.ctypes.CDLL")
     def test_load_library_macos_platform(self, mock_cdll: Mock) -> None:
         """Test library loading on macOS platform."""
-        from pitaeegsensorapi4lsl.sensor import _load_library
+        from pitaeeg.sensor import _load_library
 
         mock_lib = MagicMock()
         mock_cdll.return_value = mock_lib
 
-        with patch("pitaeegsensorapi4lsl.sensor.Path") as mock_path_cls:
+        with patch("pitaeeg.sensor.Path") as mock_path_cls:
             # Mock the path that exists
             def path_side_effect(arg: str) -> MagicMock:
                 mock_p = MagicMock()
@@ -148,16 +148,16 @@ class TestLoadLibrary:
 
             assert result == mock_lib
 
-    @patch("pitaeegsensorapi4lsl.sensor.sys.platform", "linux")
-    @patch("pitaeegsensorapi4lsl.sensor.ctypes.CDLL")
+    @patch("pitaeeg.sensor.sys.platform", "linux")
+    @patch("pitaeeg.sensor.ctypes.CDLL")
     def test_load_library_linux_platform(self, mock_cdll: Mock) -> None:
         """Test library loading on Linux platform."""
-        from pitaeegsensorapi4lsl.sensor import _load_library
+        from pitaeeg.sensor import _load_library
 
         mock_lib = MagicMock()
         mock_cdll.return_value = mock_lib
 
-        with patch("pitaeegsensorapi4lsl.sensor.Path") as mock_path_cls:
+        with patch("pitaeeg.sensor.Path") as mock_path_cls:
 
             def path_side_effect(arg: str) -> MagicMock:
                 mock_p = MagicMock()
@@ -173,23 +173,23 @@ class TestLoadLibrary:
 
             assert result == mock_lib
 
-    @patch("pitaeegsensorapi4lsl.sensor.sys.platform", "win32")
-    @patch("pitaeegsensorapi4lsl.sensor.ctypes.CDLL")
-    @patch("pitaeegsensorapi4lsl.sensor.os.add_dll_directory", create=True)
+    @patch("pitaeeg.sensor.sys.platform", "win32")
+    @patch("pitaeeg.sensor.ctypes.CDLL")
+    @patch("pitaeeg.sensor.os.add_dll_directory", create=True)
     def test_load_library_windows_platform(
         self,
         mock_add_dll: Mock,
         mock_cdll: Mock,
     ) -> None:
         """Test library loading on Windows platform."""
-        from pitaeegsensorapi4lsl.sensor import _load_library
+        from pitaeeg.sensor import _load_library
 
         mock_lib = MagicMock()
         mock_cdll.return_value = mock_lib
         mock_add_dll.return_value.__enter__ = MagicMock()
         mock_add_dll.return_value.__exit__ = MagicMock()
 
-        with patch("pitaeegsensorapi4lsl.sensor.Path") as mock_path_cls:
+        with patch("pitaeeg.sensor.Path") as mock_path_cls:
 
             def path_side_effect(arg: str) -> MagicMock:
                 mock_p = MagicMock()
@@ -213,7 +213,7 @@ class TestBindApi:
 
     def test_bind_api(self) -> None:
         """Test _bind_api sets up all function signatures."""
-        from pitaeegsensorapi4lsl.sensor import _bind_api
+        from pitaeeg.sensor import _bind_api
 
         mock_lib = MagicMock()
         result = _bind_api(mock_lib)
@@ -258,8 +258,8 @@ class TestSensor:
         lib.getReceiveNum.return_value = 0
         return lib
 
-    @patch("pitaeegsensorapi4lsl.sensor._load_library")
-    @patch("pitaeegsensorapi4lsl.sensor._bind_api")
+    @patch("pitaeeg.sensor._load_library")
+    @patch("pitaeeg.sensor._bind_api")
     def test_sensor_creation(
         self,
         mock_bind: Mock,
@@ -276,8 +276,8 @@ class TestSensor:
         assert sensor._port == "COM3"
         mock_lib.Init.assert_called_once()
 
-    @patch("pitaeegsensorapi4lsl.sensor._load_library")
-    @patch("pitaeegsensorapi4lsl.sensor._bind_api")
+    @patch("pitaeeg.sensor._load_library")
+    @patch("pitaeeg.sensor._bind_api")
     def test_sensor_init_failure(
         self,
         mock_bind: Mock,
@@ -292,8 +292,8 @@ class TestSensor:
         with pytest.raises(InitializationError):
             Sensor(port="COM3")
 
-    @patch("pitaeegsensorapi4lsl.sensor._load_library")
-    @patch("pitaeegsensorapi4lsl.sensor._bind_api")
+    @patch("pitaeeg.sensor._load_library")
+    @patch("pitaeeg.sensor._bind_api")
     def test_context_manager(
         self,
         mock_bind: Mock,
@@ -309,8 +309,8 @@ class TestSensor:
 
         mock_lib.Term.assert_called_once()
 
-    @patch("pitaeegsensorapi4lsl.sensor._load_library")
-    @patch("pitaeegsensorapi4lsl.sensor._bind_api")
+    @patch("pitaeeg.sensor._load_library")
+    @patch("pitaeeg.sensor._bind_api")
     def test_scan_devices_failure(
         self,
         mock_bind: Mock,
@@ -327,9 +327,9 @@ class TestSensor:
         with pytest.raises(ScanError):
             sensor.scan_devices()
 
-    @patch("pitaeegsensorapi4lsl.sensor._load_library")
-    @patch("pitaeegsensorapi4lsl.sensor._bind_api")
-    @patch("pitaeegsensorapi4lsl.sensor.time.time")
+    @patch("pitaeeg.sensor._load_library")
+    @patch("pitaeeg.sensor._bind_api")
+    @patch("pitaeeg.sensor.time.time")
     def test_scan_devices_success(
         self,
         mock_time: Mock,
@@ -356,9 +356,9 @@ class TestSensor:
 
         assert len(devices) >= 0  # May be empty if timeout
 
-    @patch("pitaeegsensorapi4lsl.sensor._load_library")
-    @patch("pitaeegsensorapi4lsl.sensor._bind_api")
-    @patch("pitaeegsensorapi4lsl.sensor.time.time")
+    @patch("pitaeeg.sensor._load_library")
+    @patch("pitaeeg.sensor._bind_api")
+    @patch("pitaeeg.sensor.time.time")
     def test_connect_device_not_found(
         self,
         mock_time: Mock,
@@ -378,8 +378,8 @@ class TestSensor:
         with pytest.raises(SensorConnectionError, match="not found"):
             sensor.connect("HARU2-001", scan_timeout=10.0)
 
-    @patch("pitaeegsensorapi4lsl.sensor._load_library")
-    @patch("pitaeegsensorapi4lsl.sensor._bind_api")
+    @patch("pitaeeg.sensor._load_library")
+    @patch("pitaeeg.sensor._bind_api")
     def test_connect_device_failure(
         self,
         mock_bind: Mock,
@@ -405,8 +405,8 @@ class TestSensor:
         with pytest.raises(SensorConnectionError, match="Failed to connect"):
             sensor.connect("HARU2-001", scan_timeout=1.0)
 
-    @patch("pitaeegsensorapi4lsl.sensor._load_library")
-    @patch("pitaeegsensorapi4lsl.sensor._bind_api")
+    @patch("pitaeeg.sensor._load_library")
+    @patch("pitaeeg.sensor._bind_api")
     def test_start_measurement_not_connected(
         self,
         mock_bind: Mock,
@@ -422,8 +422,8 @@ class TestSensor:
         with pytest.raises(MeasurementError, match="No device connected"):
             sensor.start_measurement()
 
-    @patch("pitaeegsensorapi4lsl.sensor._load_library")
-    @patch("pitaeegsensorapi4lsl.sensor._bind_api")
+    @patch("pitaeeg.sensor._load_library")
+    @patch("pitaeeg.sensor._bind_api")
     def test_start_measurement_failure(
         self,
         mock_bind: Mock,
@@ -441,8 +441,8 @@ class TestSensor:
         with pytest.raises(MeasurementError, match="startMeasure failed"):
             sensor.start_measurement()
 
-    @patch("pitaeegsensorapi4lsl.sensor._load_library")
-    @patch("pitaeegsensorapi4lsl.sensor._bind_api")
+    @patch("pitaeeg.sensor._load_library")
+    @patch("pitaeeg.sensor._bind_api")
     def test_properties(
         self,
         mock_bind: Mock,
@@ -464,8 +464,8 @@ class TestSensor:
         sensor._measuring = True
         assert sensor.is_measuring is True
 
-    @patch("pitaeegsensorapi4lsl.sensor._load_library")
-    @patch("pitaeegsensorapi4lsl.sensor._bind_api")
+    @patch("pitaeeg.sensor._load_library")
+    @patch("pitaeeg.sensor._bind_api")
     def test_close(
         self,
         mock_bind: Mock,
@@ -487,9 +487,9 @@ class TestSensor:
         mock_lib.Term.assert_called_once()
         assert sensor._handle is None
 
-    @patch("pitaeegsensorapi4lsl.sensor._load_library")
-    @patch("pitaeegsensorapi4lsl.sensor._bind_api")
-    @patch("pitaeegsensorapi4lsl.sensor.time.time")
+    @patch("pitaeeg.sensor._load_library")
+    @patch("pitaeeg.sensor._bind_api")
+    @patch("pitaeeg.sensor.time.time")
     def test_scan_devices_with_devices(
         self,
         mock_time: Mock,
@@ -530,10 +530,10 @@ class TestSensor:
         assert devices[0]["name"] == "HARU2-001"
         assert devices[1]["name"] == "HARU2-002"
 
-    @patch("pitaeegsensorapi4lsl.sensor._load_library")
-    @patch("pitaeegsensorapi4lsl.sensor._bind_api")
-    @patch("pitaeegsensorapi4lsl.sensor.time.time")
-    @patch("pitaeegsensorapi4lsl.sensor.time.sleep")
+    @patch("pitaeeg.sensor._load_library")
+    @patch("pitaeeg.sensor._bind_api")
+    @patch("pitaeeg.sensor.time.time")
+    @patch("pitaeeg.sensor.time.sleep")
     def test_scan_devices_with_retry(
         self,
         mock_sleep: Mock,
@@ -573,10 +573,10 @@ class TestSensor:
         # Verify sleep was called (means we did retry)
         mock_sleep.assert_called()
 
-    @patch("pitaeegsensorapi4lsl.sensor._load_library")
-    @patch("pitaeegsensorapi4lsl.sensor._bind_api")
-    @patch("pitaeegsensorapi4lsl.sensor.time.time")
-    @patch("pitaeegsensorapi4lsl.sensor.time.sleep")
+    @patch("pitaeeg.sensor._load_library")
+    @patch("pitaeeg.sensor._bind_api")
+    @patch("pitaeeg.sensor.time.time")
+    @patch("pitaeeg.sensor.time.sleep")
     def test_connect_with_retry(
         self,
         mock_sleep: Mock,
@@ -613,9 +613,9 @@ class TestSensor:
         # Verify sleep was called
         mock_sleep.assert_called()
 
-    @patch("pitaeegsensorapi4lsl.sensor._load_library")
-    @patch("pitaeegsensorapi4lsl.sensor._bind_api")
-    @patch("pitaeegsensorapi4lsl.sensor.time.time")
+    @patch("pitaeeg.sensor._load_library")
+    @patch("pitaeeg.sensor._bind_api")
+    @patch("pitaeeg.sensor.time.time")
     def test_connect_success(
         self,
         mock_time: Mock,
@@ -644,8 +644,8 @@ class TestSensor:
         assert sensor.is_connected is True
         mock_lib.connect_device.assert_called_once()
 
-    @patch("pitaeegsensorapi4lsl.sensor._load_library")
-    @patch("pitaeegsensorapi4lsl.sensor._bind_api")
+    @patch("pitaeeg.sensor._load_library")
+    @patch("pitaeeg.sensor._bind_api")
     def test_start_measurement_with_custom_channels(
         self,
         mock_bind: Mock,
@@ -677,8 +677,8 @@ class TestSensor:
         assert sensor.is_measuring is True
         mock_lib.startMeasure.assert_called_once()
 
-    @patch("pitaeegsensorapi4lsl.sensor._load_library")
-    @patch("pitaeegsensorapi4lsl.sensor._bind_api")
+    @patch("pitaeeg.sensor._load_library")
+    @patch("pitaeeg.sensor._bind_api")
     def test_start_measurement_all_channels(
         self,
         mock_bind: Mock,
@@ -709,8 +709,8 @@ class TestSensor:
         assert devicetime == 1234567890000
         assert sensor.is_measuring is True
 
-    @patch("pitaeegsensorapi4lsl.sensor._load_library")
-    @patch("pitaeegsensorapi4lsl.sensor._bind_api")
+    @patch("pitaeeg.sensor._load_library")
+    @patch("pitaeeg.sensor._bind_api")
     def test_receive_data_generator(
         self,
         mock_bind: Mock,
@@ -752,8 +752,8 @@ class TestSensor:
         assert len(received_data) == 2
         assert float(received_data[0].data[0]) == pytest.approx(1.23)
 
-    @patch("pitaeegsensorapi4lsl.sensor._load_library")
-    @patch("pitaeegsensorapi4lsl.sensor._bind_api")
+    @patch("pitaeeg.sensor._load_library")
+    @patch("pitaeeg.sensor._bind_api")
     def test_receive_data_not_measuring(
         self,
         mock_bind: Mock,
@@ -769,8 +769,8 @@ class TestSensor:
         with pytest.raises(MeasurementError, match="Measurement not started"):
             next(sensor.receive_data())
 
-    @patch("pitaeegsensorapi4lsl.sensor._load_library")
-    @patch("pitaeegsensorapi4lsl.sensor._bind_api")
+    @patch("pitaeeg.sensor._load_library")
+    @patch("pitaeeg.sensor._bind_api")
     def test_stop_measurement(
         self,
         mock_bind: Mock,
@@ -789,8 +789,8 @@ class TestSensor:
         assert sensor.is_measuring is False
         mock_lib.stopMeasure.assert_called_once()
 
-    @patch("pitaeegsensorapi4lsl.sensor._load_library")
-    @patch("pitaeegsensorapi4lsl.sensor._bind_api")
+    @patch("pitaeeg.sensor._load_library")
+    @patch("pitaeeg.sensor._bind_api")
     def test_disconnect(
         self,
         mock_bind: Mock,
@@ -810,8 +810,8 @@ class TestSensor:
         assert sensor.is_connected is False
         mock_lib.disconnect_device.assert_called_once()
 
-    @patch("pitaeegsensorapi4lsl.sensor._load_library")
-    @patch("pitaeegsensorapi4lsl.sensor._bind_api")
+    @patch("pitaeeg.sensor._load_library")
+    @patch("pitaeeg.sensor._bind_api")
     def test_sensor_initialization_params(
         self,
         mock_bind: Mock,
@@ -832,8 +832,8 @@ class TestSensor:
         assert sensor._port == "/dev/ttyUSB0"
         mock_load.assert_called_with("/custom/path/lib.so")
 
-    @patch("pitaeegsensorapi4lsl.sensor._load_library")
-    @patch("pitaeegsensorapi4lsl.sensor._bind_api")
+    @patch("pitaeeg.sensor._load_library")
+    @patch("pitaeeg.sensor._bind_api")
     def test_scan_devices_when_handle_none(
         self,
         mock_bind: Mock,
@@ -850,8 +850,8 @@ class TestSensor:
         with pytest.raises(ScanError, match="not initialized"):
             sensor.scan_devices()
 
-    @patch("pitaeegsensorapi4lsl.sensor._load_library")
-    @patch("pitaeegsensorapi4lsl.sensor._bind_api")
+    @patch("pitaeeg.sensor._load_library")
+    @patch("pitaeeg.sensor._bind_api")
     def test_connect_when_handle_none(
         self,
         mock_bind: Mock,
@@ -868,8 +868,8 @@ class TestSensor:
         with pytest.raises(SensorConnectionError, match="not initialized"):
             sensor.connect("HARU2-001")
 
-    @patch("pitaeegsensorapi4lsl.sensor._load_library")
-    @patch("pitaeegsensorapi4lsl.sensor._bind_api")
+    @patch("pitaeeg.sensor._load_library")
+    @patch("pitaeeg.sensor._bind_api")
     def test_connect_start_scan_failure(
         self,
         mock_bind: Mock,
@@ -886,8 +886,8 @@ class TestSensor:
         with pytest.raises(SensorConnectionError, match="Failed to start device scan"):
             sensor.connect("HARU2-001")
 
-    @patch("pitaeegsensorapi4lsl.sensor._load_library")
-    @patch("pitaeegsensorapi4lsl.sensor._bind_api")
+    @patch("pitaeeg.sensor._load_library")
+    @patch("pitaeeg.sensor._bind_api")
     def test_start_measurement_when_handle_none(
         self,
         mock_bind: Mock,
@@ -904,8 +904,8 @@ class TestSensor:
         with pytest.raises(MeasurementError, match="not initialized"):
             sensor.start_measurement()
 
-    @patch("pitaeegsensorapi4lsl.sensor._load_library")
-    @patch("pitaeegsensorapi4lsl.sensor._bind_api")
+    @patch("pitaeeg.sensor._load_library")
+    @patch("pitaeeg.sensor._bind_api")
     def test_receive_data_when_handle_none(
         self,
         mock_bind: Mock,
@@ -923,8 +923,8 @@ class TestSensor:
         with pytest.raises(MeasurementError, match="not initialized"):
             next(sensor.receive_data())
 
-    @patch("pitaeegsensorapi4lsl.sensor._load_library")
-    @patch("pitaeegsensorapi4lsl.sensor._bind_api")
+    @patch("pitaeeg.sensor._load_library")
+    @patch("pitaeeg.sensor._bind_api")
     def test_receive_data_skip_negative_result(
         self,
         mock_bind: Mock,

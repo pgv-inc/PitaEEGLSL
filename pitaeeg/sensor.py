@@ -98,7 +98,7 @@ def _load_library(explicit_path: str | None = None) -> ctypes.CDLL:  # noqa: C90
             if platform_dir.exists():
                 cand.extend(platform_dir / n for n in names)
 
-        # 2. Check current directory (pitaeegsensorapi4lsl package directory)
+        # 2. Check current directory (pitaeeg package directory)
         cand.extend(here / n for n in names)
 
         # 3. Check working directory

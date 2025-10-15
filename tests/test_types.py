@@ -1,4 +1,4 @@
-"""Tests for pitaeegsensorapi4lsl.types module."""
+"""Tests for pitaeeg.types module."""
 
 from __future__ import annotations
 
@@ -6,7 +6,7 @@ import ctypes
 
 import pytest
 
-from pitaeegsensorapi4lsl.types import (
+from pitaeeg.types import (
     HARU2_CH_NUM,
     MAX_CH,
     MAX_DEVICEADDR_LEN,
