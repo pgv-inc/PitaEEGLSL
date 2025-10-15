@@ -23,7 +23,7 @@ Python API for PitaEEG wireless sensor (`pitaeeg` package)
 - Poetry(pyproject.toml)
 
 ```toml
-pitaeeg = {git = "https://github.com/pgv-inc/PitaEEGSensorPy.git", rev = "0.1.0"}
+pitaeeg = {git = "https://github.com/pgv-inc/PitaEEGSensorPy.git", rev = "0.1.1"}
 ```
 
 ```bash
@@ -33,7 +33,7 @@ poetry install
 - pip
 
 ```bash
-pip install git+https://github.com/pgv-inc/PitaEEGSensorPy.git@0.1.0
+pip install git+https://github.com/pgv-inc/PitaEEGSensorPy.git@0.1.1
 ```
 
 ### Native Library Setup

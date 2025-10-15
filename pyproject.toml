@@ -1,6 +1,6 @@
 [project]
 name = "pitaeeg"
-version = "0.1.0"
+version = "0.1.1"
 description = "Python API for PitaEEG wireless sensor"
 
 [[project.authors]]
@@ -8,7 +8,7 @@ name = "kezure <3447723+kezure@users.noreply.github.com>"
 
 [tool.poetry]
 name = "pitaeeg"
-version = "0.1.0"
+version = "0.1.1"
 description = "Python API for PitaEEG wireless sensor"
 authors = ["kezure <3447723+kezure@users.noreply.github.com>"]
 license = "MIT"
