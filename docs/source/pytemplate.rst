@@ -1,13 +1,13 @@
-pytemplate package
+pitaeegsensorapi4lsl package
 ==================
 
 Submodules
 ----------
 
-pytemplate.main module
+pitaeegsensorapi4lsl.main module
 ----------------------
 
-.. automodule:: pytemplate.main
+.. automodule:: pitaeegsensorapi4lsl.main
    :members:
    :undoc-members:
    :show-inheritance:
@@ -15,7 +15,7 @@ pytemplate.main module
 Module contents
 ---------------
 
-.. automodule:: pytemplate
+.. automodule:: pitaeegsensorapi4lsl
    :members:
    :undoc-members:
    :show-inheritance:

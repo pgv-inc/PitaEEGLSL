@@ -1,6 +1,6 @@
 import unittest
 
-from pytemplate.main import main
+from pitaeegsensorapi4lsl.main import main
 
 
 class TestMain(unittest.TestCase):

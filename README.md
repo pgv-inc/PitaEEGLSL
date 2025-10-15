@@ -1,9 +1,9 @@
-# pytemplate
+# pitaeegsensorapi4lsl
 
 Python package template with poetry
 
-[![Python check](https://github.com/kezure/pytemplate/actions/workflows/pythonpackage.yml/badge.svg)](https://github.com/kezure/pytemplate/actions/workflows/pythonpackage.yml)
-[![Docker Build and Test](https://github.com/kezure/pytemplate/actions/workflows/build_and_test.yml/badge.svg)](https://github.com/kezure/pytemplate/actions/workflows/build_and_test.yml)
+[![Python check](https://github.com/kezure/pitaeegsensorapi4lsl/actions/workflows/pythonpackage.yml/badge.svg)](https://github.com/kezure/pitaeegsensorapi4lsl/actions/workflows/pythonpackage.yml)
+[![Docker Build and Test](https://github.com/kezure/pitaeegsensorapi4lsl/actions/workflows/build_and_test.yml/badge.svg)](https://github.com/kezure/pitaeegsensorapi4lsl/actions/workflows/build_and_test.yml)
 
 ## Requirements
 
@@ -14,14 +14,14 @@ Python package template with poetry
 
 ## Usage template
 
-- Replace `pytemplate` with your package name
+- Replace `pitaeegsensorapi4lsl` with your package name
 
 ## Installation
 
 - Poetry(pyproject.toml)
 
 ```toml
-pytemplate = {git = "https://github.com/kezure/pytemplate.git", rev = "0.1.0"}
+pitaeegsensorapi4lsl = {git = "https://github.com/kezure/pitaeegsensorapi4lsl.git", rev = "0.1.0"}
 ```
 
 ```bash
@@ -31,15 +31,15 @@ poetry install
 - pip
 
 ```bash
-pip install git+https://github.com/kezure/pytemplate.git@0.1.0
+pip install git+https://github.com/kezure/pitaeegsensorapi4lsl.git@0.1.0
 ```
 
 ## Usage
 
 ```python
-import pytemplate
+import pitaeegsensorapi4lsl
 
-pytemplate.hello()
+pitaeegsensorapi4lsl.hello()
 ```
 
 ## Development
