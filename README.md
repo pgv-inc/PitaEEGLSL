@@ -6,7 +6,7 @@ Python API for PitaEEG wireless sensor
 
 ## Features
 
-- Easy-to-use Python interface for PitaEEG wireless EEG sensors
+- Easy-to-use Python interface for PitaEEGSensor wireless EEG sensors
 - Automatic platform detection and native library loading
 - Context manager support for safe resource management
 - Type hints for better IDE support
@@ -40,7 +40,7 @@ pip install git+https://github.com/kezure/pitaeegsensorapi4lsl.git@0.1.0
 
 The native API library must be placed in the `libs/` directory according to your platform:
 
-```
+```bash
 libs/
 ├── linux/
 │   └── libpitaeegsensor.so (or libpitaeegsensor.so.x.x.x)
@@ -113,9 +113,11 @@ Or run it directly:
 #### Sensor Class
 
 **Constructor:**
+
 - `Sensor(port, library_path=None, com_timeout=2000, scan_timeout=5000)`
 
 **Methods:**
+
 - `scan_devices(timeout=10.0)` - Scan for available devices
 - `connect(device_name, scan_timeout=10.0)` - Connect to a specific device
 - `start_measurement(enabled_channels=None)` - Start data acquisition
@@ -125,12 +127,14 @@ Or run it directly:
 - `close()` - Close sensor interface
 
 **Properties:**
+
 - `is_connected` - Check if device is connected
 - `is_measuring` - Check if measurement is active
 
 #### Exceptions
 
 All exceptions inherit from `PitaEEGSensorError`:
+
 - `LibraryNotFoundError` - Native library not found
 - `InitializationError` - Sensor initialization failed
 - `ScanError` - Device scanning failed
@@ -156,6 +160,7 @@ make check
 ```
 
 This will run:
+
 - `ruff` - Fast Python linter
 - `ruff-format` - Code formatter
 - `mypy` - Static type checker
@@ -195,14 +200,3 @@ Current test coverage: **100%** 🎉
 - ✅ `exceptions.py`: 100% coverage
 - ✅ `__init__.py`: 100% coverage
 - ✅ `sensor.py`: 100% coverage
-
-**Test Statistics:**
-- 80 tests passing
-- 3 test modules
-- Comprehensive test coverage including:
-  - All platform-specific code paths (Windows, macOS, Linux)
-  - Error handling and edge cases
-  - Library loading and API binding
-  - Device scanning and connection
-  - Measurement and data acquisition
-- All tests use mocks (no hardware required)
