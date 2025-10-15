@@ -787,6 +787,24 @@ class TestSensor:
 
     @patch("pitaeegsensorapi4lsl.sensor._load_library")
     @patch("pitaeegsensorapi4lsl.sensor._bind_api")
+    def test_connect_start_scan_failure(
+        self,
+        mock_bind: Mock,
+        mock_load: Mock,
+        mock_lib: Mock,
+    ) -> None:
+        """Test connect raises error when startScan fails."""
+        mock_bind.return_value = mock_lib
+        mock_load.return_value = mock_lib
+        mock_lib.startScan.return_value = -1  # Fail startScan
+
+        sensor = Sensor(port="COM3")
+
+        with pytest.raises(SensorConnectionError, match="Failed to start device scan"):
+            sensor.connect("HARU2-001")
+
+    @patch("pitaeegsensorapi4lsl.sensor._load_library")
+    @patch("pitaeegsensorapi4lsl.sensor._bind_api")
     def test_start_measurement_when_handle_none(
         self,
         mock_bind: Mock,
