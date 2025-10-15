@@ -43,7 +43,7 @@ def key_pressed_e() -> bool:
 def main() -> None:  # noqa: PLR0915
     """Acquire EEG sensor data and save to CSV file."""
     ap = argparse.ArgumentParser(
-        description="Acquire EEG sensor data from PitaEEG wireless sensor",
+        description="Acquire EEG sensor data from PitaEEGSensor",
     )
     ap.add_argument("port", help="Serial port (e.g., COM3, /dev/ttyUSB0)")
     ap.add_argument("sensor", help="Sensor name to connect to (e.g., HARU2-001)")

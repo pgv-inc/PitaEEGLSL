@@ -1,4 +1,4 @@
-"""Core sensor API for PitaEEG wireless sensor."""
+"""Core sensor API for PitaEEGSensor."""
 
 from __future__ import annotations
 
@@ -179,7 +179,7 @@ def _bind_api(lib: ctypes.CDLL) -> ctypes.CDLL:
 
 
 class Sensor:
-    """PitaEEG wireless sensor interface.
+    """PitaEEGSensor interface.
 
     Example:
         >>> sensor = Sensor(port="COM3", library_path="path/to/lib")
