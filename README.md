@@ -189,14 +189,20 @@ make coverage-dist
 
 ### Test Coverage
 
-Current test coverage: **70%**
+Current test coverage: **100%** 🎉
 
 - ✅ `types.py`: 100% coverage
 - ✅ `exceptions.py`: 100% coverage
 - ✅ `__init__.py`: 100% coverage
-- 🟡 `sensor.py`: 66% coverage (platform-specific code paths not fully tested)
+- ✅ `sensor.py`: 100% coverage
 
 **Test Statistics:**
-- 56 tests passing
+- 80 tests passing
 - 3 test modules
+- Comprehensive test coverage including:
+  - All platform-specific code paths (Windows, macOS, Linux)
+  - Error handling and edge cases
+  - Library loading and API binding
+  - Device scanning and connection
+  - Measurement and data acquisition
 - All tests use mocks (no hardware required)

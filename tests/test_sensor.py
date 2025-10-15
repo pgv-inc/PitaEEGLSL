@@ -533,6 +533,89 @@ class TestSensor:
     @patch("pitaeegsensorapi4lsl.sensor._load_library")
     @patch("pitaeegsensorapi4lsl.sensor._bind_api")
     @patch("pitaeegsensorapi4lsl.sensor.time.time")
+    @patch("pitaeegsensorapi4lsl.sensor.time.sleep")
+    def test_scan_devices_with_retry(
+        self,
+        mock_sleep: Mock,
+        mock_time: Mock,
+        mock_bind: Mock,
+        mock_load: Mock,
+        mock_lib: Mock,
+    ) -> None:
+        """Test scan_devices retries until device is found."""
+        mock_bind.return_value = mock_lib
+        mock_load.return_value = mock_lib
+        # Simulate multiple iterations before finding device
+        mock_time.side_effect = [0.0, 0.05, 0.15]
+
+        call_count = [0]
+
+        def mock_get_num(handle: int) -> int:
+            call_count[0] += 1
+            return 1 if call_count[0] >= 2 else 0  # Second call has device
+
+        def mock_get_device(handle: int, info_ptr: ctypes.POINTER) -> int:  # type: ignore[type-arg]
+            info = ctypes.cast(info_ptr, ctypes.POINTER(DeviceInfo)).contents
+            info.devicename = b"HARU2-001\x00"
+            info.deviceid = (ctypes.c_ubyte * 8)(
+                *[0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08]
+            )
+            return 0
+
+        mock_lib.getScannedNum.side_effect = mock_get_num
+        mock_lib.getScannedDevice.side_effect = mock_get_device
+
+        sensor = Sensor(port="COM3")
+        devices = sensor.scan_devices(timeout=1.0)
+
+        assert len(devices) == 1
+        assert devices[0]["name"] == "HARU2-001"
+        # Verify sleep was called (means we did retry)
+        mock_sleep.assert_called()
+
+    @patch("pitaeegsensorapi4lsl.sensor._load_library")
+    @patch("pitaeegsensorapi4lsl.sensor._bind_api")
+    @patch("pitaeegsensorapi4lsl.sensor.time.time")
+    @patch("pitaeegsensorapi4lsl.sensor.time.sleep")
+    def test_connect_with_retry(
+        self,
+        mock_sleep: Mock,
+        mock_time: Mock,
+        mock_bind: Mock,
+        mock_load: Mock,
+        mock_lib: Mock,
+    ) -> None:
+        """Test connect retries until device is found."""
+        mock_bind.return_value = mock_lib
+        mock_load.return_value = mock_lib
+        # Simulate multiple iterations
+        mock_time.side_effect = [0.0, 0.05, 0.15]
+
+        call_count = [0]
+
+        def mock_get_num(handle: int) -> int:
+            call_count[0] += 1
+            return 1 if call_count[0] >= 2 else 0
+
+        def mock_get_device(handle: int, info_ptr: ctypes.POINTER) -> int:  # type: ignore[type-arg]
+            info = ctypes.cast(info_ptr, ctypes.POINTER(DeviceInfo)).contents
+            info.devicename = b"HARU2-001\x00"
+            return 0
+
+        mock_lib.getScannedNum.side_effect = mock_get_num
+        mock_lib.getScannedDevice.side_effect = mock_get_device
+        mock_lib.connect_device.return_value = 0
+
+        sensor = Sensor(port="COM3")
+        sensor.connect("HARU2-001", scan_timeout=1.0)
+
+        assert sensor.is_connected is True
+        # Verify sleep was called
+        mock_sleep.assert_called()
+
+    @patch("pitaeegsensorapi4lsl.sensor._load_library")
+    @patch("pitaeegsensorapi4lsl.sensor._bind_api")
+    @patch("pitaeegsensorapi4lsl.sensor.time.time")
     def test_connect_success(
         self,
         mock_time: Mock,
