@@ -1,0 +1,49 @@
+repos:
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.14.0
+    hooks:
+      - id: ruff
+        name: ruff
+        description: "Run 'ruff' for extremely fast Python linting"
+        entry: ruff check --force-exclude
+        language: python
+        types_or: [python, pyi]
+        args: [--fix]
+        require_serial: true
+        exclude: "(tests/|docs/)"
+      - id: ruff-format
+        name: ruff-format
+        description: "Run 'ruff format' for extremely fast Python formatting"
+        entry: ruff format --force-exclude
+        language: python
+        types_or: [python, pyi]
+        args: []
+        require_serial: true
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.18.2
+    hooks:
+      - id: mypy
+        args: [
+          --strict,
+          --no-strict-optional,
+          --ignore-missing-imports,
+          --disallow-untyped-defs,
+          --no-implicit-optional,
+          --install-types,
+          --non-interactive,
+          ]
+        exclude: "(tests/)"
+
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      - id: check-json
+      - id: check-toml
+      - id: check-yaml
+      - id: check-xml
+      - id: check-vcs-permalinks
+      - id: check-added-large-files
+        args: ["--maxkb=90000"]
+      - id: debug-statements
+      - id: detect-aws-credentials
+      - id: detect-private-key

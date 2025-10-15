@@ -1,0 +1,63 @@
+
+name: Docker Build and Test
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths-ignore:
+      - "docs/**"
+      - "**.md"
+jobs:
+  docker-build-test:
+    name: Docker build and test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+        with:
+          clean: true
+      - name: free disk space
+        run: |
+          sudo apt install -y tree
+          sudo swapoff -a
+          sudo rm -f /swapfile
+          sudo apt clean
+          docker image prune --force 
+          docker rmi $(docker image ls -aq)
+          df -h
+      # - name: Create credential files (netrc) for private repo and git lfs
+      #   id: create-netrc
+      #   run: |
+      #     # Create netrc using GITHUB_DEVELOP_PGV_ACCESS_TOKEN environment variable
+      #     # for access to private repo at docker build.
+      #     echo "machine github.com" > $GITHUB_WORKSPACE/netrc && \
+      #     echo "login ${{ secrets.GITHUB_PAT }}" >> $GITHUB_WORKSPACE/netrc && \
+      #     echo "password x-oauth-basic" >> $GITHUB_WORKSPACE/netrc
+      - name: Build Docker image
+        id: build-image
+        run: |
+          # Build a docker container
+          cd $GITHUB_WORKSPACE
+          make build-ci
+          ls -la
+      - name: Lint and Test
+        id: lint-test-run
+        run: |
+          # Lint $ Test run
+          cd $GITHUB_WORKSPACE
+          make flake8-ci
+          make test-ci
+      # - name: rm-credentials
+      #   run: |
+      #     rm -rf $GITHUB_WORKSPACE/netrc
+      #   if: always()
+      # - name: Notify actions to slack(pgv-inc-notification.slack.com)
+      #   uses: 8398a7/action-slack@v3
+      #   with:
+      #     status: ${{ job.status }}
+      #     fields: repo,message,commit,author,action,eventName,ref,workflow,job,took,pullRequest # selectable (default: repo,message)
+      #     author_name: ${{ github.actor }}
+      #   env:
+      #     SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }} # required
+        if: always() # Pick up events even if the job fails or is canceled.

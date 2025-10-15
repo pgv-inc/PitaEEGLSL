@@ -1,0 +1,48 @@
+name: Create a pull request for release.
+
+on:
+  push:
+    branches:
+      - prd 
+      - stg
+      - dev
+      - main
+jobs:
+  create-release-pr:
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Check if PR exists
+        id: check_pr
+        run: |
+          # Determine the title and base branch based on the pushed branch
+          if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
+            pr_title="main"
+            base_branch="dev"
+          elif [[ "${{ github.ref }}" == "refs/heads/dev" ]]; then
+            pr_title="dev"
+            base_branch="stg"
+          elif [[ "${{ github.ref }}" == "refs/heads/stg" ]]; then
+            pr_title="stg"
+            base_branch="prd"
+          else
+            echo "Not a valid branch for this workflow"
+            exit 1
+          fi
+          
+          # Get the count of PRs with the determined title and base branch
+          count=$(gh pr list -S ${pr_title}' in:title' -B $base_branch | wc -l)
+          
+          # Set the outputs for the next steps
+          echo "count=$count" >> $GITHUB_OUTPUT
+          echo "pr_title=$pr_title" >> $GITHUB_OUTPUT
+          echo "base_branch=$base_branch" >> $GITHUB_OUTPUT
+
+      - name: Create release PR
+        if: ${{ steps.check_pr.outputs.count == 0 }}
+        run: |
+          gh pr create -B ${{ steps.check_pr.outputs.base_branch }} -t ${{ steps.check_pr.outputs.pr_title }} -b ""

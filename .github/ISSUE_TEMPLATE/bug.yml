@@ -1,0 +1,38 @@
+name: Create Bug Report
+description: バグや不具合の報告
+title: "[Bug]: "
+labels: ["bug", "triage", "wontfix"]
+assignees: []
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        バグや不具合の報告にご協力いただき、ありがとうございます。
+        以下のフォームに必要事項をご記入ください。
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: 発生している問題
+      description: 何が起きているか、期待する動作は何かを教えてください
+      placeholder: できるだけ具体的に記述してください
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: ログ出力
+      description: 関連するログがあれば貼り付けてください（自動的にコード形式に変換されます）
+      render: shell
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: 確認事項
+      description: 以下の項目を確認の上、チェックしてください
+      options:
+        - label: 同様のバグが既に存在しないことを確認しました
+          required: true
+        - label: このバグが本プロジェクトの目的に沿っていることを確認しました
+          required: true
+
+

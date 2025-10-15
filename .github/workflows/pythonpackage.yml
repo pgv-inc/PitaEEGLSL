@@ -1,0 +1,72 @@
+# This workflow will install Python dependencies, run tests and lint with a variety of Python versions
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
+
+name: Python check
+
+on:
+  pull_request:
+    branches: 
+      - main
+    paths-ignore:
+      - "docs/**"
+      - "**.md"
+jobs:
+  py-lint-format-test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.12"]
+    steps:
+      - uses: actions/checkout@v5
+      - name: Python ${{ matrix.python-version }} setup
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Package install
+        run: |
+          sudo apt-get install -y tree
+          python -m pip install --upgrade pip
+          pip install poetry
+      - name: Create credential files (netrc) for private repo and git lfs
+        id: create-credentials
+        run: |
+          # Create netrc using GITHUB_DEVELOP_PGV_ACCESS_TOKEN environment variable
+          # for access to private repo at docker build.
+          echo "machine github.com" > $HOME/.netrc && \
+          echo "login ${{ secrets.GITHUB_TOKEN }}" >> $HOME/.netrc && \
+          echo "password x-oauth-basic" >> $HOME/.netrc && \
+          echo "machine ${{ secrets.GIT_LFS_URL }}" >> $HOME/.netrc && \
+          echo "login ${{ secrets.GIT_LFS_USERNAME }}" >> $HOME/.netrc && \
+          echo "password ${{ secrets.GIT_LFS_PASSWORD}}" >> $HOME/.netrc
+      - name: Install dependencies
+        run: |
+          cd $GITHUB_WORKSPACE
+          poetry install
+      - name: Remove netrc
+        run: |
+          rm -rf $HOME/.netrc
+      - name: Check
+        id: check
+        run: |
+          # Test run
+          cd $GITHUB_WORKSPACE
+          make check
+      - name: PyTest
+        id: pytest
+        run: |
+          # Test run
+          cd $GITHUB_WORKSPACE
+          make pytest-dist
+      - name: rm-credentials
+        run: |
+          rm -rf $HOME/.netrc
+        if: always()
+      # - name: Notify actions to slack
+      #   uses: 8398a7/action-slack@v3
+      #   with:
+      #     status: ${{ job.status }}
+      #     fields: repo,message,commit,author,action,eventName,ref,workflow,job,took
+      #     author_name: ${{ github.actor }}
+      #   env:
+      #     SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+      #   if: always()
