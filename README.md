@@ -3,18 +3,12 @@
 Python package template with poetry
 
 [![Python check](https://github.com/kezure/pitaeegsensorapi4lsl/actions/workflows/pythonpackage.yml/badge.svg)](https://github.com/kezure/pitaeegsensorapi4lsl/actions/workflows/pythonpackage.yml)
-[![Docker Build and Test](https://github.com/kezure/pitaeegsensorapi4lsl/actions/workflows/build_and_test.yml/badge.svg)](https://github.com/kezure/pitaeegsensorapi4lsl/actions/workflows/build_and_test.yml)
 
 ## Requirements
 
 - make >=4.3
 - Python >3.11, <4.0
 - Poetry >=2.1
-- Docker >=27
-
-## Usage template
-
-- Replace `pitaeegsensorapi4lsl` with your package name
 
 ## Installation
 
