@@ -191,12 +191,3 @@ Generate coverage report in parallel:
 ```bash
 make coverage-dist
 ```
-
-### Test Coverage
-
-Current test coverage: **100%** 🎉
-
-- ✅ `types.py`: 100% coverage
-- ✅ `exceptions.py`: 100% coverage
-- ✅ `__init__.py`: 100% coverage
-- ✅ `sensor.py`: 100% coverage
