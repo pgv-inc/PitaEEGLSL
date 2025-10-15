@@ -1,12 +1,12 @@
 # PitaEEGSensorPy
 
-Python API for PitaEEG wireless sensor (`pitaeeg` package)
+Python API for PitaEEGSensor (`pitaeeg` package)
 
 [![Python check](https://github.com/pgv-inc/PitaEEGSensorPy/actions/workflows/pythonpackage.yml/badge.svg)](https://github.com/pgv-inc/PitaEEGSensorPy/actions/workflows/pythonpackage.yml)
 
 ## Features
 
-- Easy-to-use Python interface for PitaEEG wireless EEG sensors
+- Easy-to-use Python interface for PitaEEGSensor
 - Automatic platform detection and native library loading
 - Context manager support for safe resource management
 - Type hints for better IDE support
@@ -23,7 +23,7 @@ Python API for PitaEEG wireless sensor (`pitaeeg` package)
 - Poetry(pyproject.toml)
 
 ```toml
-pitaeeg = {git = "https://github.com/pgv-inc/PitaEEGSensorPy.git", rev = "0.1.1"}
+pitaeeg = {git = "https://github.com/pgv-inc/PitaEEGSensorPy.git", rev = "0.1.2"}
 ```
 
 ```bash
@@ -33,7 +33,7 @@ poetry install
 - pip
 
 ```bash
-pip install git+https://github.com/pgv-inc/PitaEEGSensorPy.git@0.1.1
+pip install git+https://github.com/pgv-inc/PitaEEGSensorPy.git@0.1.2
 ```
 
 ### Native Library Setup
