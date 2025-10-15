@@ -1,10 +1,38 @@
 # @see https://docs.pytest.org/en/latest/how-to/writing_hook_functions.html
 
+from __future__ import annotations
+
+from unittest.mock import MagicMock
 
 import pytest
 from dotenv import load_dotenv
 
 load_dotenv()
+
+
+@pytest.fixture
+def mock_lib() -> MagicMock:
+    """Create a mock library for sensor tests.
+
+    Returns:
+        MagicMock: Mock library with default return values.
+
+    """
+    lib = MagicMock()
+    lib.Init.return_value = 1  # Valid handle
+    lib.Term.return_value = 0
+    lib.startScan.return_value = 0
+    lib.stopScan.return_value = 0
+    lib.getScannedNum.return_value = 0
+    lib.getScannedDevice.return_value = 0
+    lib.connect_device.return_value = 0
+    lib.disconnect_device.return_value = 0
+    lib.startMeasure.return_value = 0
+    lib.stopMeasure.return_value = 0
+    lib.getReceiveNum.return_value = 0
+    lib.getReceiveData2.return_value = 0
+    lib.waitReceivedData.return_value = 0
+    return lib
 
 
 def pytest_addoption(parser):
