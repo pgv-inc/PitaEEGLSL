@@ -152,4 +152,3 @@ class TestExceptionHierarchy:
         for exc in exceptions:
             with pytest.raises(PitaEEGSensorError):
                 raise exc
-

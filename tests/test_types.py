@@ -151,4 +151,3 @@ class TestSensorParam:
 
         for i in range(MAX_CH):
             assert param.usech[i] == 1
-
