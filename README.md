@@ -1,8 +1,16 @@
 # pitaeegsensorapi4lsl
 
-Python package template with poetry
+Python API for PitaEEG wireless sensor
 
 [![Python check](https://github.com/kezure/pitaeegsensorapi4lsl/actions/workflows/pythonpackage.yml/badge.svg)](https://github.com/kezure/pitaeegsensorapi4lsl/actions/workflows/pythonpackage.yml)
+
+## Features
+
+- Easy-to-use Python interface for PitaEEG wireless EEG sensors
+- Automatic platform detection and native library loading
+- Context manager support for safe resource management
+- Type hints for better IDE support
+- Comprehensive error handling with custom exceptions
 
 ## Requirements
 
@@ -49,11 +57,85 @@ The library will be automatically loaded from the appropriate platform directory
 
 ## Usage
 
-```python
-import pitaeegsensorapi4lsl
+### Basic Example
 
-pitaeegsensorapi4lsl.hello()
+```python
+from pitaeegsensorapi4lsl import Sensor
+
+# Initialize and connect to sensor
+with Sensor(port="COM3") as sensor:
+    # Scan and connect to device
+    sensor.connect("HARU2-001", scan_timeout=10.0)
+    
+    # Start measurement
+    devicetime_ms = sensor.start_measurement()
+    
+    # Receive data
+    for data in sensor.receive_data():
+        ch_z = float(data.data[0])  # Channel Z
+        ch_r = float(data.data[1])  # Channel R
+        ch_l = float(data.data[2])  # Channel L
+        battery = float(data.batlevel)
+        
+        print(f"ChZ: {ch_z:.2f}, ChR: {ch_r:.2f}, ChL: {ch_l:.2f}, Bat: {battery:.2f}")
+        
+        # Process your data here...
+        break  # Remove this to continuously receive data
 ```
+
+### Scan for Available Devices
+
+```python
+from pitaeegsensorapi4lsl import Sensor
+
+with Sensor(port="COM3") as sensor:
+    devices = sensor.scan_devices(timeout=10.0)
+    for device in devices:
+        print(f"Found: {device['name']} (ID: {device['id']})")
+```
+
+### Save Data to CSV
+
+See the complete example in `examples/wireless_acquisition.py`:
+
+```bash
+python examples/wireless_acquisition.py COM3 HARU2-001 --out output.csv
+```
+
+Or run it directly:
+
+```bash
+./examples/wireless_acquisition.py COM3 HARU2-001
+```
+
+### API Reference
+
+#### Sensor Class
+
+**Constructor:**
+- `Sensor(port, library_path=None, com_timeout=2000, scan_timeout=5000)`
+
+**Methods:**
+- `scan_devices(timeout=10.0)` - Scan for available devices
+- `connect(device_name, scan_timeout=10.0)` - Connect to a specific device
+- `start_measurement(enabled_channels=None)` - Start data acquisition
+- `receive_data()` - Generator that yields received data
+- `stop_measurement()` - Stop data acquisition
+- `disconnect()` - Disconnect from device
+- `close()` - Close sensor interface
+
+**Properties:**
+- `is_connected` - Check if device is connected
+- `is_measuring` - Check if measurement is active
+
+#### Exceptions
+
+All exceptions inherit from `PitaEEGSensorError`:
+- `LibraryNotFoundError` - Native library not found
+- `InitializationError` - Sensor initialization failed
+- `ScanError` - Device scanning failed
+- `SensorConnectionError` - Device connection failed
+- `MeasurementError` - Measurement operation failed
 
 ## Development
 
