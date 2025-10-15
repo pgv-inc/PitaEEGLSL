@@ -1,21 +1,18 @@
-.. pitaeegsensorapi4lsl documentation master file, created by
-   sphinx-quickstart on Sun Jan 14 09:28:45 2024.
+.. pitaeeg documentation master file, created by
+   sphinx-quickstart on Thu Oct 16 00:12:25 2025.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to pitaeegsensorapi4lsl's documentation!
-======================================
+pitaeeg documentation
+=====================
+
+Add your content using ``reStructuredText`` syntax. See the
+`reStructuredText <https://www.sphinx-doc.org/en/master/usage/restructuredtext/index.html>`_
+documentation for details.
+
 
 .. toctree::
    :maxdepth: 4
    :caption: Contents:
 
-   pitaeegsensorapi4lsl
-
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+   pitaeeg
