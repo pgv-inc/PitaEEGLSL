@@ -1,8 +1,8 @@
-# PitaEEGSensorPy
+# PitaEEGLSL
 
-Python API for PitaEEGSensor (`pitaeeg` package)
+Python API for PitaEEG (`pitaeeg` package)
 
-[![Python check](https://github.com/pgv-inc/PitaEEGSensorPy/actions/workflows/pythonpackage.yml/badge.svg)](https://github.com/pgv-inc/PitaEEGSensorPy/actions/workflows/pythonpackage.yml)
+[![Python check](https://github.com/pgv-inc/PitaEEGLSL/actions/workflows/pythonpackage.yml/badge.svg)](https://github.com/pgv-inc/PitaEEGLSL/actions/workflows/pythonpackage.yml)
 
 ## Features
 
@@ -23,7 +23,7 @@ Python API for PitaEEGSensor (`pitaeeg` package)
 - Poetry(pyproject.toml)
 
 ```toml
-pitaeeg = {git = "https://github.com/pgv-inc/PitaEEGSensorPy.git", rev = "0.1.2"}
+pitaeeg = {git = "https://github.com/pgv-inc/PitaEEGLSL.git", rev = "0.1.2"}
 ```
 
 ```bash
@@ -33,7 +33,7 @@ poetry install
 - pip
 
 ```bash
-pip install git+https://github.com/pgv-inc/PitaEEGSensorPy.git@0.1.2
+pip install git+https://github.com/pgv-inc/PitaEEGLSL.git@0.1.2
 ```
 
 ### Native Library Setup
