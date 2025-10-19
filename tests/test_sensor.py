@@ -92,8 +92,8 @@ class TestLoadLibrary:
             mock_path.is_dir.return_value = False
             mock_path.exists.return_value = True
             mock_path.suffix = ".dll"
-            mock_path.stem = "pitaeegsensor"
-            mock_path.with_stem.return_value = Path("pitaeegsensord.dll")
+            mock_path.stem = "pitaeeg"
+            mock_path.with_stem.return_value = Path("pitaeegd.dll")
             mock_path_cls.return_value = mock_path
 
             result = _load_library("/path/to/lib.dll")
@@ -136,7 +136,7 @@ class TestLoadLibrary:
             # Mock the path that exists
             def path_side_effect(arg: str) -> MagicMock:
                 mock_p = MagicMock()
-                if "libpitaeegsensor.dylib" in str(arg):
+                if "libpitaeeg.dylib" in str(arg):
                     mock_p.exists.return_value = True
                 else:
                     mock_p.exists.return_value = False
@@ -161,7 +161,7 @@ class TestLoadLibrary:
 
             def path_side_effect(arg: str) -> MagicMock:
                 mock_p = MagicMock()
-                if "libpitaeegsensor.so" in str(arg):
+                if "libpitaeeg.so" in str(arg):
                     mock_p.exists.return_value = True
                 else:
                     mock_p.exists.return_value = False
@@ -193,7 +193,7 @@ class TestLoadLibrary:
 
             def path_side_effect(arg: str) -> MagicMock:
                 mock_p = MagicMock()
-                if "pitaeegsensor.dll" in str(arg):
+                if "pitaeeg.dll" in str(arg):
                     mock_p.exists.return_value = True
                     mock_p.parent = Path("/some/path")
                 else:

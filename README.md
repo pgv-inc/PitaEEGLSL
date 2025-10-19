@@ -1,8 +1,8 @@
-# PitaEEGSensorPy
+# PitaEEGLSL
 
-Python API for PitaEEGSensor (`pitaeeg` package)
+PitaEEG LSL for Python (`pitaeeg` package)
 
-[![Python check](https://github.com/pgv-inc/PitaEEGSensorPy/actions/workflows/pythonpackage.yml/badge.svg)](https://github.com/pgv-inc/PitaEEGSensorPy/actions/workflows/pythonpackage.yml)
+[![Python check](https://github.com/pgv-inc/PitaEEGLSL/actions/workflows/pythonpackage.yml/badge.svg)](https://github.com/pgv-inc/PitaEEGLSL/actions/workflows/pythonpackage.yml)
 
 ## Features
 
@@ -23,7 +23,7 @@ Python API for PitaEEGSensor (`pitaeeg` package)
 - Poetry(pyproject.toml)
 
 ```toml
-pitaeeg = {git = "https://github.com/pgv-inc/PitaEEGSensorPy.git", rev = "0.1.2"}
+pitaeeg = {git = "https://github.com/pgv-inc/PitaEEGLSL.git", rev = "0.2.0"}
 ```
 
 ```bash
@@ -33,7 +33,7 @@ poetry install
 - pip
 
 ```bash
-pip install git+https://github.com/pgv-inc/PitaEEGSensorPy.git@0.1.2
+pip install git+https://github.com/pgv-inc/PitaEEGLSL.git@0.2.0
 ```
 
 ### Native Library Setup
@@ -43,14 +43,14 @@ The native API library must be placed in the `libs/` directory according to your
 ```bash
 libs/
 ├── linux/
-│   └── libpitaeegsensor.so (or libpitaeegsensor.so.x.x.x)
+│   └── libpitaeeg.so (or libpitaeeg.so.x.x.x)
 ├── macos/
 │   ├── arm64/
-│   │   └── libpitaeegsensor.dylib (or libpitaeegsensor.x.x.x.dylib)
+│   │   └── libpitaeeg.dylib (or libpitaeeg.x.x.x.dylib)
 │   └── x86_64/
-│       └── libpitaeegsensor.dylib (or libpitaeegsensor.x.x.x.dylib)
+│       └── libpitaeeg.dylib (or libpitaeeg.x.x.x.dylib)
 └── windows/
-    └── pitaeegsensor.dll (or pitaeegsensord.dll)
+    └── pitaeeg.dll (or pitaeegd.dll)
 ```
 
 The library will be automatically loaded from the appropriate platform directory.
