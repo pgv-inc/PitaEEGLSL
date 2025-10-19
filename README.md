@@ -1,6 +1,6 @@
 # PitaEEGLSL
 
-Python API for PitaEEG (`pitaeeg` package)
+PitaEEG LSL for Python (`pitaeeg` package)
 
 [![Python check](https://github.com/pgv-inc/PitaEEGLSL/actions/workflows/pythonpackage.yml/badge.svg)](https://github.com/pgv-inc/PitaEEGLSL/actions/workflows/pythonpackage.yml)
 
@@ -43,14 +43,14 @@ The native API library must be placed in the `libs/` directory according to your
 ```bash
 libs/
 ├── linux/
-│   └── libpitaeegsensor.so (or libpitaeegsensor.so.x.x.x)
+│   └── libpitaeeg.so (or libpitaeeg.so.x.x.x)
 ├── macos/
 │   ├── arm64/
-│   │   └── libpitaeegsensor.dylib (or libpitaeegsensor.x.x.x.dylib)
+│   │   └── libpitaeeg.dylib (or libpitaeeg.x.x.x.dylib)
 │   └── x86_64/
-│       └── libpitaeegsensor.dylib (or libpitaeegsensor.x.x.x.dylib)
+│       └── libpitaeeg.dylib (or libpitaeeg.x.x.x.dylib)
 └── windows/
-    └── pitaeegsensor.dll (or pitaeegsensord.dll)
+    └── pitaeeg.dll (or pitaeegd.dll)
 ```
 
 The library will be automatically loaded from the appropriate platform directory.

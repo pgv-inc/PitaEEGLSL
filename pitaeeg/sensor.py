@@ -56,11 +56,11 @@ def _load_library(explicit_path: str | None = None) -> ctypes.CDLL:  # noqa: C90
     """
     # If a directory is passed, search within it (try with 'd' suffix too)
     names = (
-        ["pitaeegsensor.dll", "pitaeegsensord.dll"]
+        ["pitaeeg.dll", "pitaeegd.dll"]
         if _is_win()
-        else ["libpitaeegsensor.dylib", "libpitaeegsensord.dylib"]
+        else ["libpitaeeg.dylib", "libpitaeegd.dylib"]
         if _is_mac()
-        else ["libpitaeegsensor.so", "libpitaeegsensord.so"]
+        else ["libpitaeeg.so", "libpitaeegd.so"]
     )
 
     here = Path(__file__).resolve().parent
