@@ -50,7 +50,7 @@ libs/
 │   └── x86_64/
 │       └── libpitaeeg.dylib (or libpitaeeg.x.x.x.dylib)
 └── windows/
-    └── pitaeeg.dll (or pitaeegd.dll)
+    └── pitaeeg.dll (or pitaeeg.dll)
 ```
 
 The library will be automatically loaded from the appropriate platform directory.
