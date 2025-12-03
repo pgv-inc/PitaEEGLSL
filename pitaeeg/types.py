@@ -43,3 +43,11 @@ class SensorParam(ctypes.Structure):
         ("usech", ctypes.c_ubyte * MAX_CH),
         ("reserve", ctypes.c_ubyte * 32),
     ]
+
+
+class ContactResistance(ctypes.Structure):
+    _fields_ = [
+        ("ChZ", ctypes.c_float),
+        ("ChR", ctypes.c_float),
+        ("ChL", ctypes.c_float),
+    ]

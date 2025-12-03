@@ -17,7 +17,7 @@ from .exceptions import (
     ScanError,
     SensorConnectionError,
 )
-from .types import DeviceInfo, ReceiveData2, SensorParam, TimesetParam
+from .types import DeviceInfo, ReceiveData2, TimesetParam, SensorParam, ContactResistance
 
 if TYPE_CHECKING:
     from collections.abc import Generator
@@ -109,10 +109,16 @@ def _load_library(explicit_path: str | None = None) -> ctypes.CDLL:  # noqa: C90
         if not c.exists():
             continue
         try:
+            # 絶対パスにしてから使う
+            c_abs = c.resolve()
+
             if _is_win():
-                with os.add_dll_directory(str(c.parent)):  # type: ignore[attr-defined]
-                    return ctypes.CDLL(str(c))
-            return ctypes.CDLL(str(c))
+                parent = c_abs.parent
+                # AddDllDirectory には絶対パスを渡す
+                with os.add_dll_directory(str(parent)):  # type: ignore[attr-defined]
+                    return ctypes.CDLL(str(c_abs))
+            # Windows 以外
+            return ctypes.CDLL(str(c_abs))
         except OSError as e:
             last = e
 
@@ -173,10 +179,45 @@ def _bind_api(lib: ctypes.CDLL) -> ctypes.CDLL:
     ]
     lib.startMeasure.restype = ctypes.c_int
 
+    # startMeasure2: long long*
+    lib.startMeasure2.argtypes = [
+        ctypes.c_int,
+        ctypes.POINTER(ctypes.c_longlong),
+    ]
+    lib.startMeasure2.restype = ctypes.c_int
+
     lib.stopMeasure.argtypes = [ctypes.c_int]
     lib.stopMeasure.restype = ctypes.c_int
-    return lib
 
+    # int getPgvSensorBatteryRemainingTime(int handle , double *battery);
+    lib.getPgvSensorBatteryRemainingTime.argtypes = [
+        ctypes.c_int,
+        ctypes.POINTER(ctypes.c_double),
+    ]
+    lib.getPgvSensorBatteryRemainingTime.restype = ctypes.c_int
+
+    # int getPgvSensorVersion(int handle,double  *version);
+    lib.getPgvSensorVersion.argtypes = [
+        ctypes.c_int,
+        ctypes.POINTER(ctypes.c_double),
+    ]
+    lib.getPgvSensorVersion.restype = ctypes.c_int
+
+    # int getSensorState(int handle, int *state, int *error);
+    lib.getSensorState.argtypes = [
+        ctypes.c_int,
+        ctypes.POINTER(ctypes.c_int),
+        ctypes.POINTER(ctypes.c_int),
+    ]
+    lib.getSensorState.restype = ctypes.c_int
+
+    # int getContactResistance(int handle, CONTACT_RESISTANCE *resistance);
+    lib.getContactResistance.argtypes = [
+        ctypes.c_int,
+        ctypes.POINTER(ContactResistance),
+    ]
+    lib.getContactResistance.restype = ctypes.c_int    
+    return lib
 
 class Sensor:
     """PitaEEGSensor interface.
@@ -198,7 +239,7 @@ class Sensor:
         self,
         port: str,
         library_path: str | None = None,
-        com_timeout: int = 2000,
+        com_timeout: int = 5000,
         scan_timeout: int = 5000,
     ) -> None:
         """Initialize the sensor interface.
@@ -368,22 +409,11 @@ class Sensor:
             msg = "No device connected"
             raise MeasurementError(msg)
 
-        sp = SensorParam()
-        if enabled_channels is None:
-            # Enable all channels
-            for i in range(8):
-                sp.usech[i] = 1
-        else:
-            for i in range(8):
-                sp.usech[i] = 1 if i in enabled_channels else 0
-
         dummy_double = ctypes.c_double(0.0)
         devicetime_ll = ctypes.c_longlong(0)
 
-        rc = self._lib.startMeasure(
+        rc = self._lib.startMeasure2(
             self._handle,
-            ctypes.byref(sp),
-            ctypes.byref(dummy_double),
             ctypes.byref(devicetime_ll),
         )
 
@@ -442,6 +472,84 @@ class Sensor:
         if self._handle is not None:
             self._lib.Term(self._handle)
             self._handle = None
+
+    def get_battery_remaining_time(self) -> float:
+        """Get remaining battery time (unit is whatever the C API returns)."""
+        if self._handle is None:
+            msg = "Sensor not initialized"
+            raise MeasurementError(msg)
+
+        value = ctypes.c_double(0.0)
+        rc = self._lib.getPgvSensorBatteryRemainingTime(
+            self._handle,
+            ctypes.byref(value),
+        )
+        if rc != 0:
+            msg = f"getPgvSensorBatteryRemainingTime failed with error code: {rc}"
+            raise MeasurementError(msg)
+
+        return float(value.value)
+
+    def get_version(self) -> float:
+        """Get sensor firmware/version (as double from native API)."""
+        if self._handle is None:
+            msg = "Sensor not initialized"
+            raise MeasurementError(msg)
+
+        value = ctypes.c_double(0.0)
+        rc = self._lib.getPgvSensorVersion(
+            self._handle,
+            ctypes.byref(value),
+        )
+        if rc != 0:
+            msg = f"getPgvSensorVersion failed with error code: {rc}"
+            raise MeasurementError(msg)
+
+        return float(value.value)
+
+    def get_state(self) -> tuple[int, int]:
+        """Get sensor state and error code.
+
+        Returns:
+            (state, error)
+        """
+        if self._handle is None:
+            msg = "Sensor not initialized"
+            raise MeasurementError(msg)
+
+        state = ctypes.c_int(0)
+        err = ctypes.c_int(0)
+        rc = self._lib.getSensorState(
+            self._handle,
+            ctypes.byref(state),
+            ctypes.byref(err),
+        )
+        if rc != 0:
+            msg = f"getSensorState failed with error code: {rc}"
+            raise MeasurementError(msg)
+
+        return int(state.value), int(err.value)
+
+    def get_contact_resistance(self) -> ContactResistance:
+        """Get contact resistance information.
+
+        Returns:
+            ContactResistance: ctypes structure with raw fields.
+        """
+        if self._handle is None:
+            msg = "Sensor not initialized"
+            raise MeasurementError(msg)
+
+        res = ContactResistance()
+        rc = self._lib.getContactResistance(
+            self._handle,
+            ctypes.byref(res),
+        )
+        if rc != 0:
+            msg = f"getContactResistance failed with error code: {rc}"
+            raise MeasurementError(msg)
+
+        return res
 
     @property
     def is_connected(self) -> bool:
