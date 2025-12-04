@@ -652,36 +652,6 @@ class TestSensor:
         assert sensor.is_connected is True
         mock_lib.connect_device.assert_called_once()
 
-    @patch("pitaeeg.sensor._load_library")
-    @patch("pitaeeg.sensor._bind_api")
-    def test_start_measurement_with_custom_channels(
-        self,
-        mock_bind: Mock,
-        mock_load: Mock,
-        mock_lib: Mock,
-    ) -> None:
-        """Test start_measurement with custom enabled channels."""
-        mock_bind.return_value = mock_lib
-        mock_load.return_value = mock_lib
-
-        def mock_start_measure2(
-            handle: int,
-            ll_ptr: ctypes.POINTER,  # type: ignore[type-arg]
-        ) -> int:
-            ll = ctypes.cast(ll_ptr, ctypes.POINTER(ctypes.c_longlong)).contents
-            ll.value = 1234567890000
-            return 0
-
-        mock_lib.startMeasure2.side_effect = mock_start_measure2
-
-        sensor = Sensor(port="COM3")
-        sensor._connected_device = DeviceInfo()
-
-        devicetime = sensor.start_measurement(enabled_channels=[0, 1, 2])
-
-        assert devicetime == 1234567890000
-        assert sensor.is_measuring is True
-        mock_lib.startMeasure2.assert_called_once()
 
     @patch("pitaeeg.sensor._load_library")
     @patch("pitaeeg.sensor._bind_api")

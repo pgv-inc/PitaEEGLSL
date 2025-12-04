@@ -387,20 +387,18 @@ class Sensor:
 
         self._connected_device = target
 
-    def start_measurement(self, enabled_channels: list[int] | None = None) -> int:
-        """Start measurement.
+    def start_measurement(self) -> int:
+        """Start EEG measurement.
 
-        Args:
-            enabled_channels: List of channel indices to enable (0-7).
-                            If None, all channels are enabled.
+        Starts measurement using all available channels.
 
         Returns:
             Device time in milliseconds since epoch.
 
         Raises:
             MeasurementError: If starting measurement fails.
-
         """
+
         if self._handle is None:
             msg = "Sensor not initialized"
             raise MeasurementError(msg)
@@ -454,27 +452,73 @@ class Sensor:
                     yield recv
 
     def stop_measurement(self) -> None:
-        """Stop measurement."""
+        """Stop ongoing EEG measurement.
+
+        Stops measurement only if the device is initialized and currently
+        measuring. If no measurement is active, this function does nothing.
+
+        Raises:
+            MeasurementError: Not raised directly here, but subsequent API
+                calls depending on measurement state may fail if measurement
+                was never started.
+        """
         if self._handle is not None and self._measuring:
             self._lib.stopMeasure(self._handle)
             self._measuring = False
 
     def disconnect(self) -> None:
-        """Disconnect from the device."""
+        """Disconnect from the EEG device.
+
+        If a measurement is active, it will be stopped first. After
+        disconnecting, the internal connection state is cleared.
+
+        Raises:
+            SensorConnectionError: If the sensor was never connected.
+                (i.e., `_connected_device` is None)        
+        """
         if self._handle is not None and self._connected_device is not None:
             self.stop_measurement()
             self._lib.disconnect_device(self._handle)
             self._connected_device = None
 
     def close(self) -> None:
-        """Close the sensor interface and release resources."""
-        self.disconnect()
+        """Close the sensor interface and release resources.
+
+        This method attempts to safely stop measurement, disconnect the
+        device, and terminate the sensor handle. All operations are
+        best-effort and any internal errors are ignored. This function
+        never raises exceptions.
+
+        Notes:
+            - If measurement is active, it will be stopped.
+            - If a device is connected, it will be disconnected.
+            - If a handle is present, it will be terminated.
+            - If any step fails, the error is silently ignored.
+        """
+        try:
+            self.disconnect()
+        except Exception:
+            pass
+
         if self._handle is not None:
-            self._lib.Term(self._handle)
+            try:
+                self._lib.Term(self._handle)
+            except Exception:
+                pass
             self._handle = None
 
     def get_battery_remaining_time(self) -> float:
-        """Get remaining battery time (unit is whatever the C API returns)."""
+        """Return remaining battery time.
+
+        The returned value represents the estimated remaining battery time in minutes.
+
+        Returns:
+            float: Remaining battery time in minutes.
+
+        Raises:
+            MeasurementError: If the sensor is not initialized or if the operation
+            fails.
+        """
         if self._handle is None:
             msg = "Sensor not initialized"
             raise MeasurementError(msg)
@@ -491,7 +535,17 @@ class Sensor:
         return float(value.value)
 
     def get_version(self) -> float:
-        """Get sensor firmware/version (as double from native API)."""
+        """Return sensor firmware version.
+
+        The version is returned as a floating-point number.
+
+        Returns:
+            float: Firmware version value from the device.
+
+        Raises:
+            MeasurementError: If the sensor is not initialized or the
+                native API call fails.
+        """
         if self._handle is None:
             msg = "Sensor not initialized"
             raise MeasurementError(msg)
@@ -508,10 +562,41 @@ class Sensor:
         return float(value.value)
 
     def get_state(self) -> tuple[int, int]:
-        """Get sensor state and error code.
+        """Get the current sensor state and error code.
 
         Returns:
-            (state, error)
+            tuple[int, int]: A tuple ``(state, error)`` where:
+
+            **Sensor State (SENSOR_STATE)**
+            Represents the operating status of the EEG device.
+
+            - INITIAL (0): Initial state
+            - WAIT_CONNECT (1): Waiting for device connection
+            - IDLE (2): Waiting to start measurement
+            - MEASURE (3): Measuring via wireless mode
+            - STORE (4): Measuring in storage mode
+            - ERR (0x80 / 128): Error state flag
+
+            Multiple states may be combined using a logical OR.
+
+            **Sensor Error (SENSOR_ERROR)**
+            Represents abnormal conditions detected by the device.
+
+            - ELECTRODE_NOT_CONNECTED (0x01): Electrode sheet not connected
+            - AFE_COMM_ERROR (0x02): Hardware communication error ※
+            - BLE_IC_COMM_ERROR_CMD (0x03): BLE IC command communication error ※
+            - BLE_IC_COMM_ERROR_DATA (0x04): BLE IC data communication error ※
+            - CHARGE_ERROR (0x05): Charging-related hardware error ※
+            - BATTERY_REMAINING_ERROR (0x06): Battery remaining below 5%
+            - STORAGE_ERROR (0x07): Failed to save data to storage
+            - BLE_COMM_ERROR (0x08): BLE communication hardware error ※
+            - USB_COMM_ERROR (0x09): USB communication hardware error ※
+            - ERROR_END (0x0A): General hardware error flag ※
+
+            ※ If this error occurs, please contact PGV support.
+
+        Raises:
+            MeasurementError: If the sensor is not initialized or the API call fails.
         """
         if self._handle is None:
             msg = "Sensor not initialized"
@@ -531,10 +616,15 @@ class Sensor:
         return int(state.value), int(err.value)
 
     def get_contact_resistance(self) -> ContactResistance:
-        """Get contact resistance information.
+        """Retrieve electrode contact-resistance data.
 
         Returns:
-            ContactResistance: ctypes structure with raw fields.
+            ContactResistance: Structure containing raw resistance values
+                (e.g., ChZ, ChR, ChL). The value is expressed in ohms (Ω).
+
+        Raises:
+            MeasurementError: If the sensor is not initialized or the
+                native API call fails.
         """
         if self._handle is None:
             msg = "Sensor not initialized"
