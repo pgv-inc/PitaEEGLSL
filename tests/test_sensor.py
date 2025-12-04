@@ -235,9 +235,17 @@ class TestBindApi:
         assert hasattr(mock_lib.waitReceivedData, "argtypes")
         assert hasattr(mock_lib.getReceiveNum, "argtypes")
         assert hasattr(mock_lib.getReceiveData2, "argtypes")
-        assert hasattr(mock_lib.startMeasure, "argtypes")
+        assert hasattr(mock_lib.startMeasure2, "argtypes")
+        assert hasattr(mock_lib.startMeasure2, "restype")
         assert hasattr(mock_lib.stopMeasure, "argtypes")
-
+        assert hasattr(mock_lib.getPgvSensorBatteryRemainingTime, "argtypes")
+        assert hasattr(mock_lib.getPgvSensorBatteryRemainingTime, "restype")
+        assert hasattr(mock_lib.getPgvSensorVersion, "argtypes")
+        assert hasattr(mock_lib.getPgvSensorVersion, "restype")
+        assert hasattr(mock_lib.getSensorState, "argtypes")
+        assert hasattr(mock_lib.getSensorState, "restype")
+        assert hasattr(mock_lib.getContactResistance, "argtypes")
+        assert hasattr(mock_lib.getContactResistance, "restype")
 
 class TestSensor:
     """Test Sensor class."""
@@ -433,7 +441,7 @@ class TestSensor:
         """Test MeasurementError is raised when startMeasure fails."""
         mock_bind.return_value = mock_lib
         mock_load.return_value = mock_lib
-        mock_lib.startMeasure.return_value = -1  # Error
+        mock_lib.startMeasure2.return_value = -1  # Error
 
         sensor = Sensor(port="COM3")
         sensor._connected_device = DeviceInfo()  # Fake connection
@@ -656,17 +664,15 @@ class TestSensor:
         mock_bind.return_value = mock_lib
         mock_load.return_value = mock_lib
 
-        def mock_start_measure(
+        def mock_start_measure2(
             handle: int,
-            sp_ptr: ctypes.POINTER,  # type: ignore[type-arg]
-            double_ptr: ctypes.POINTER,  # type: ignore[type-arg]
             ll_ptr: ctypes.POINTER,  # type: ignore[type-arg]
         ) -> int:
             ll = ctypes.cast(ll_ptr, ctypes.POINTER(ctypes.c_longlong)).contents
             ll.value = 1234567890000
             return 0
 
-        mock_lib.startMeasure.side_effect = mock_start_measure
+        mock_lib.startMeasure2.side_effect = mock_start_measure2
 
         sensor = Sensor(port="COM3")
         sensor._connected_device = DeviceInfo()
@@ -675,7 +681,7 @@ class TestSensor:
 
         assert devicetime == 1234567890000
         assert sensor.is_measuring is True
-        mock_lib.startMeasure.assert_called_once()
+        mock_lib.startMeasure2.assert_called_once()
 
     @patch("pitaeeg.sensor._load_library")
     @patch("pitaeeg.sensor._bind_api")
@@ -689,17 +695,15 @@ class TestSensor:
         mock_bind.return_value = mock_lib
         mock_load.return_value = mock_lib
 
-        def mock_start_measure(
+        def mock_start_measure2(
             handle: int,
-            sp_ptr: ctypes.POINTER,  # type: ignore[type-arg]
-            double_ptr: ctypes.POINTER,  # type: ignore[type-arg]
             ll_ptr: ctypes.POINTER,  # type: ignore[type-arg]
         ) -> int:
             ll = ctypes.cast(ll_ptr, ctypes.POINTER(ctypes.c_longlong)).contents
             ll.value = 1234567890000
             return 0
 
-        mock_lib.startMeasure.side_effect = mock_start_measure
+        mock_lib.startMeasure2.side_effect = mock_start_measure2
 
         sensor = Sensor(port="COM3")
         sensor._connected_device = DeviceInfo()
@@ -964,3 +968,75 @@ class TestSensor:
 
         # Should have 2 items (skipping the one with -1 return)
         assert len(received_data) == 2
+
+    def test_getPgvSensorBatteryRemainingTime(self):
+        from pitaeeg.sensor import _bind_api
+        mock_lib = MagicMock()
+        _bind_api(mock_lib)
+
+        assert hasattr(mock_lib.getPgvSensorBatteryRemainingTime, "argtypes")
+        assert hasattr(mock_lib.getPgvSensorBatteryRemainingTime, "restype")
+
+        assert mock_lib.getPgvSensorBatteryRemainingTime.argtypes == [
+            ctypes.c_int,
+            ctypes.POINTER(ctypes.c_double),
+        ]
+        assert mock_lib.getPgvSensorBatteryRemainingTime.restype == ctypes.c_int
+
+    def test_getPgvSensorVersion(self):
+        from pitaeeg.sensor import _bind_api
+        mock_lib = MagicMock()
+        _bind_api(mock_lib)
+
+        assert hasattr(mock_lib.getPgvSensorVersion, "argtypes")
+        assert hasattr(mock_lib.getPgvSensorVersion, "restype")
+
+        assert mock_lib.getPgvSensorVersion.argtypes == [
+            ctypes.c_int,
+            ctypes.POINTER(ctypes.c_double),
+        ]
+        assert mock_lib.getPgvSensorVersion.restype == ctypes.c_int
+
+    def test_getSensorState(self):
+        from pitaeeg.sensor import _bind_api
+        mock_lib = MagicMock()
+        _bind_api(mock_lib)
+
+        assert hasattr(mock_lib.getSensorState, "argtypes")
+        assert hasattr(mock_lib.getSensorState, "restype")
+
+        assert mock_lib.getSensorState.argtypes == [
+            ctypes.c_int,
+            ctypes.POINTER(ctypes.c_int),
+            ctypes.POINTER(ctypes.c_int),
+        ]
+        assert mock_lib.getSensorState.restype == ctypes.c_int
+
+    def test_getContactResistance(self):
+        from pitaeeg.sensor import _bind_api
+        from pitaeeg.types import ContactResistance
+        mock_lib = MagicMock()
+        _bind_api(mock_lib)
+
+        assert hasattr(mock_lib.getContactResistance, "argtypes")
+        assert hasattr(mock_lib.getContactResistance, "restype")
+
+        assert mock_lib.getContactResistance.argtypes == [
+            ctypes.c_int,
+            ctypes.POINTER(ContactResistance),
+        ]
+        assert mock_lib.getContactResistance.restype == ctypes.c_int
+
+    def test_startMeasure2(self):
+        from pitaeeg.sensor import _bind_api
+        mock_lib = MagicMock()
+        _bind_api(mock_lib)
+
+        assert hasattr(mock_lib.startMeasure2, "argtypes")
+        assert hasattr(mock_lib.startMeasure2, "restype")
+
+        assert mock_lib.startMeasure2.argtypes == [
+            ctypes.c_int,
+            ctypes.POINTER(ctypes.c_longlong),
+        ]
+        assert mock_lib.startMeasure2.restype == ctypes.c_int
