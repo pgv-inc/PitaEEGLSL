@@ -14,6 +14,7 @@ from pitaeeg import sensor  # sensor.py 内の os / ctypes などをパッチす
 # .env を読み込む（テスト全体で共通）
 load_dotenv()
 
+
 @pytest.fixture
 def mock_lib() -> MagicMock:
     """Create a mock library for sensor tests.
@@ -104,7 +105,7 @@ def pytest_configure(config):
     Returns:
     -------
 
-    """    
+    """
     config.addinivalue_line(
         "markers", "runslow: Mark of a test that takes a long time to run"
     )

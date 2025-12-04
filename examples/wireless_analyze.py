@@ -8,10 +8,9 @@ import sys
 import time
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
-from collections import deque
 
-import numpy as np
 import matplotlib.pyplot as plt
+import numpy as np
 
 from pitaeeg import PitaEEGSensorError, Sensor
 
@@ -104,7 +103,7 @@ def main() -> None:  # noqa: PLR0915
 
             print(
                 "[INFO] Contact resistance:"
-                f" ChZ={ch_z:.2f}, ChR={ch_r:.2f}, ChL={ch_l:.2f}"  # noqa: T201
+                f" ChZ={ch_z:.2f}, ChR={ch_r:.2f}, ChL={ch_l:.2f}",
             )
 
             # Start measurement
@@ -142,7 +141,7 @@ def main() -> None:  # noqa: PLR0915
                 f.write("datetime,ChZ,ChR,ChL,bat,isRepair\n")
 
                 print(
-                    f"[INFO] Receiving data for {args.duration} sec ...",  # noqa: T201
+                    f"[INFO] Receiving data for {args.duration} sec ...",
                 )
 
                 start_wall = time.time()
@@ -236,7 +235,6 @@ def main() -> None:  # noqa: PLR0915
 
             fig1.tight_layout(rect=[0, 0.03, 1, 0.95])
 
-
             # ---- プロット：スペクトログラム (3ch) ----
             fig2, axes2 = plt.subplots(3, 1, figsize=(10, 8), sharex=True)
             fig2.suptitle("Spectrogram (0.5–40 Hz filtered)", fontsize=16)
@@ -249,8 +247,8 @@ def main() -> None:  # noqa: PLR0915
                     Fs=fs,
                     noverlap=128,
                     cmap="jet",
-                    vmin=0, 
-                    vmax=35
+                    vmin=0,
+                    vmax=35,
                 )
                 ax.set_ylim(0, 60)
                 ax.set_ylabel(f"{labels[ch]}\nFreq [Hz]")

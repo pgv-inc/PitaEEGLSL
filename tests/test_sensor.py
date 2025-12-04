@@ -247,6 +247,7 @@ class TestBindApi:
         assert hasattr(mock_lib.getContactResistance, "argtypes")
         assert hasattr(mock_lib.getContactResistance, "restype")
 
+
 class TestSensor:
     """Test Sensor class."""
 
@@ -652,7 +653,6 @@ class TestSensor:
         assert sensor.is_connected is True
         mock_lib.connect_device.assert_called_once()
 
-
     @patch("pitaeeg.sensor._load_library")
     @patch("pitaeeg.sensor._bind_api")
     def test_start_measurement_all_channels(
@@ -941,6 +941,7 @@ class TestSensor:
 
     def test_getPgvSensorBatteryRemainingTime(self):
         from pitaeeg.sensor import _bind_api
+
         mock_lib = MagicMock()
         _bind_api(mock_lib)
 
@@ -955,6 +956,7 @@ class TestSensor:
 
     def test_getPgvSensorVersion(self):
         from pitaeeg.sensor import _bind_api
+
         mock_lib = MagicMock()
         _bind_api(mock_lib)
 
@@ -969,6 +971,7 @@ class TestSensor:
 
     def test_getSensorState(self):
         from pitaeeg.sensor import _bind_api
+
         mock_lib = MagicMock()
         _bind_api(mock_lib)
 
@@ -985,6 +988,7 @@ class TestSensor:
     def test_getContactResistance(self):
         from pitaeeg.sensor import _bind_api
         from pitaeeg.types import ContactResistance
+
         mock_lib = MagicMock()
         _bind_api(mock_lib)
 
@@ -999,6 +1003,7 @@ class TestSensor:
 
     def test_startMeasure2(self):
         from pitaeeg.sensor import _bind_api
+
         mock_lib = MagicMock()
         _bind_api(mock_lib)
 

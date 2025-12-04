@@ -17,7 +17,13 @@ from .exceptions import (
     ScanError,
     SensorConnectionError,
 )
-from .types import DeviceInfo, ReceiveData2, TimesetParam, SensorParam, ContactResistance
+from .types import (
+    ContactResistance,
+    DeviceInfo,
+    ReceiveData2,
+    SensorParam,
+    TimesetParam,
+)
 
 if TYPE_CHECKING:
     from collections.abc import Generator
@@ -216,8 +222,9 @@ def _bind_api(lib: ctypes.CDLL) -> ctypes.CDLL:
         ctypes.c_int,
         ctypes.POINTER(ContactResistance),
     ]
-    lib.getContactResistance.restype = ctypes.c_int    
+    lib.getContactResistance.restype = ctypes.c_int
     return lib
+
 
 class Sensor:
     """PitaEEGSensor interface.
@@ -397,8 +404,8 @@ class Sensor:
 
         Raises:
             MeasurementError: If starting measurement fails.
-        """
 
+        """
         if self._handle is None:
             msg = "Sensor not initialized"
             raise MeasurementError(msg)
@@ -461,6 +468,7 @@ class Sensor:
             MeasurementError: Not raised directly here, but subsequent API
                 calls depending on measurement state may fail if measurement
                 was never started.
+
         """
         if self._handle is not None and self._measuring:
             self._lib.stopMeasure(self._handle)
@@ -474,7 +482,8 @@ class Sensor:
 
         Raises:
             SensorConnectionError: If the sensor was never connected.
-                (i.e., `_connected_device` is None)        
+                (i.e., `_connected_device` is None)
+
         """
         if self._handle is not None and self._connected_device is not None:
             self.stop_measurement()
@@ -494,6 +503,7 @@ class Sensor:
             - If a device is connected, it will be disconnected.
             - If a handle is present, it will be terminated.
             - If any step fails, the error is silently ignored.
+
         """
         try:
             self.disconnect()
@@ -518,6 +528,7 @@ class Sensor:
         Raises:
             MeasurementError: If the sensor is not initialized or if the operation
             fails.
+
         """
         if self._handle is None:
             msg = "Sensor not initialized"
@@ -545,6 +556,7 @@ class Sensor:
         Raises:
             MeasurementError: If the sensor is not initialized or the
                 native API call fails.
+
         """
         if self._handle is None:
             msg = "Sensor not initialized"
@@ -597,6 +609,7 @@ class Sensor:
 
         Raises:
             MeasurementError: If the sensor is not initialized or the API call fails.
+
         """
         if self._handle is None:
             msg = "Sensor not initialized"
@@ -625,6 +638,7 @@ class Sensor:
         Raises:
             MeasurementError: If the sensor is not initialized or the
                 native API call fails.
+
         """
         if self._handle is None:
             msg = "Sensor not initialized"
