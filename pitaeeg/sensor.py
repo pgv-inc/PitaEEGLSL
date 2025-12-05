@@ -111,7 +111,8 @@ def _load_library(explicit_path: str | None = None) -> ctypes.CDLL:  # noqa: C90
         # 3. Check working directory
         cand.extend(Path(n) for n in names)
 
-    last = None
+    last: OSError | None = None
+
     for c in cand:
         if not c.exists():
             continue
@@ -121,9 +122,16 @@ def _load_library(explicit_path: str | None = None) -> ctypes.CDLL:  # noqa: C90
 
             if _is_win():
                 parent = c_abs.parent
-                # AddDllDirectory には絶対パスを渡す
-                with os.add_dll_directory(str(parent)):
-                    return ctypes.CDLL(str(c_abs))
+
+                # os.add_dll_directory が存在する場合だけ使う(Python 3.8+)
+                add_dll_directory = getattr(os, "add_dll_directory", None)
+                if callable(add_dll_directory):
+                    # AddDllDirectory には絶対パスを渡す
+                    with add_dll_directory(str(parent)):
+                        return ctypes.CDLL(str(c_abs))
+                # 古い Python などで add_dll_directory が無い場合
+                return ctypes.CDLL(str(c_abs))
+
             # Windows 以外
             return ctypes.CDLL(str(c_abs))
         except OSError as e:
