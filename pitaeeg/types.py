@@ -46,7 +46,9 @@ class SensorParam(ctypes.Structure):
 
 
 class ContactResistance(ctypes.Structure):
-    _fields_ = [
+    """Contact resistance values for each EEG channel."""
+
+    _fields_: ClassVar[list[tuple[str, ctypes.c_float]]] = [
         ("ChZ", ctypes.c_float),
         ("ChR", ctypes.c_float),
         ("ChL", ctypes.c_float),

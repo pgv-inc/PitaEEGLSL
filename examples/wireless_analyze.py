@@ -14,14 +14,16 @@ import numpy as np
 
 from pitaeeg import PitaEEGSensorError, Sensor
 
+LAST_CHANNEL_INDEX = 2
+
 
 def _design_fir_lowpass(fc: float, fs: float, num_taps: int) -> np.ndarray:
     """Windowed-sinc low-pass FIR."""
     fc_norm = fc / fs  # (cycles/sample)
-    M = num_taps - 1
+    m = num_taps - 1
     n = np.arange(num_taps, dtype=float)
-    h = 2 * fc_norm * np.sinc(2 * fc_norm * (n - M / 2))
-    w = 0.54 - 0.46 * np.cos(2 * np.pi * n / M)  # Hamming
+    h = 2 * fc_norm * np.sinc(2 * fc_norm * (n - m / 2))
+    w = 0.54 - 0.46 * np.cos(2 * np.pi * n / m)  # Hamming
     h *= w
     h /= np.sum(h)  # DC ゲインを 1 に正規化
     return h
@@ -36,7 +38,7 @@ def _design_fir_highpass(fc: float, fs: float, num_taps: int) -> np.ndarray:
     return h_hp
 
 
-def main() -> None:  # noqa: PLR0915
+def main() -> None:  # noqa: PLR0915, C901
     """Acquire EEG sensor data and save to CSV file."""
     ap = argparse.ArgumentParser(
         description="Acquire EEG sensor data from PitaEEGSensor",
@@ -94,14 +96,14 @@ def main() -> None:  # noqa: PLR0915
             print(f"[INFO] Sensor state: {state}, error: {error}")  # noqa: T201
 
             # 4) 接触抵抗
-            #    ContactResistance 型（例: res.ch_z, res.ch_r, res.ch_l）を想定
+            #    ContactResistance 型 (例: res.ch_z, res.ch_r, res.ch_l) を想定
             res = sensor.get_contact_resistance()
-            # 型によって名前は合わせてください（ch_z / ChZ など）
+            # 型によって名前は合わせてください (ch_z / ChZ など)
             ch_z = getattr(res, "ch_z", getattr(res, "ChZ", None))
             ch_r = getattr(res, "ch_r", getattr(res, "ChR", None))
             ch_l = getattr(res, "ch_l", getattr(res, "ChL", None))
 
-            print(
+            print( # noqa: T201
                 "[INFO] Contact resistance:"
                 f" ChZ={ch_z:.2f}, ChR={ch_r:.2f}, ChL={ch_l:.2f}",
             )
@@ -136,14 +138,10 @@ def main() -> None:  # noqa: PLR0915
 
             fs = 250.0  # 4 ms per sample 前提
 
-            # CSV 書き出し＋バッファリング
+            # CSV 書き出し + バッファリング
             with out_path.open("w", encoding="utf-8", newline="") as f:
                 f.write("datetime,ChZ,ChR,ChL,bat,isRepair\n")
-
-                print(
-                    f"[INFO] Receiving data for {args.duration} sec ...",
-                )
-
+                print(f"[INFO] Receiving data for {args.duration} sec ...")  # noqa: T201
                 start_wall = time.time()
 
                 try:
@@ -167,7 +165,7 @@ def main() -> None:  # noqa: PLR0915
                             f"{iso},{ch_z:.6f},{ch_r:.6f},{ch_l:.6f},{bat:.3f},{is_repair}\n",
                         )
 
-                        # メモリにも保存（後で FIR & FFT 用）
+                        # メモリにも保存 (後で FIR & FFT 用)
                         times_ms.append(next_ts_ms)
                         chz_list.append(ch_z)
                         chr_list.append(ch_r)
@@ -191,7 +189,7 @@ def main() -> None:  # noqa: PLR0915
                 print("[WARN] No data collected; nothing to plot.")  # noqa: T201
                 return
 
-            # numpy 配列化（3chまとめて扱う）
+            # numpy 配列化 (3ch まとめて扱う)
             chz = np.asarray(chz_list, dtype=float)
             chr_ = np.asarray(chr_list, dtype=float)
             chl = np.asarray(chl_list, dtype=float)
@@ -206,22 +204,22 @@ def main() -> None:  # noqa: PLR0915
             hpf_cut = 0.5
             lpf_cut = 40.0
 
-            NTAPS_HP = 251
-            NTAPS_LP = 127
+            ntaps_hp = 251
+            ntaps_lp = 127
 
-            h_hp = _design_fir_highpass(hpf_cut, fs, NTAPS_HP)
-            h_lp = _design_fir_lowpass(lpf_cut, fs, NTAPS_LP)
+            h_hp = _design_fir_highpass(hpf_cut, fs, ntaps_hp)
+            h_lp = _design_fir_lowpass(lpf_cut, fs, ntaps_lp)
 
-            # 3ch 分バンドパス（0.5–40Hz）を適用
+            # 3ch 分バンドパス (0.5-40 Hz) を適用
             filtered = np.zeros_like(data)
             for ch in range(3):
                 hp = np.convolve(data[ch], h_hp, mode="same")
                 bp = np.convolve(hp, h_lp, mode="same")
                 filtered[ch] = bp
 
-            # ---- プロット：フィルタ波形 (3ch) ----
+            # ---- プロット: フィルタ波形 (3ch) ----
             fig1, axes1 = plt.subplots(3, 1, figsize=(10, 8), sharex=True)
-            fig1.suptitle("Filtered EEG (0.5–40 Hz)", fontsize=16)
+            fig1.suptitle("Filtered EEG (0.5-40 Hz)", fontsize=16)
 
             for ch in range(3):
                 ax = axes1[ch]
@@ -230,18 +228,18 @@ def main() -> None:  # noqa: PLR0915
                 ax.set_ylim(-500, 500)
                 ax.invert_yaxis()
 
-                if ch == 2:
+                if ch == LAST_CHANNEL_INDEX:
                     ax.set_xlabel("Time [s]")
 
             fig1.tight_layout(rect=[0, 0.03, 1, 0.95])
 
-            # ---- プロット：スペクトログラム (3ch) ----
+            # ---- プロット: スペクトログラム (3ch) ----
             fig2, axes2 = plt.subplots(3, 1, figsize=(10, 8), sharex=True)
-            fig2.suptitle("Spectrogram (0.5–40 Hz filtered)", fontsize=16)
+            fig2.suptitle("Spectrogram (0.5-40 Hz filtered)", fontsize=16)
 
             for ch in range(3):
                 ax = axes2[ch]
-                Pxx, freqs, bins, im = ax.specgram(
+                _pxx, _freqs, _bins, _im = ax.specgram(
                     filtered[ch],
                     NFFT=256,
                     Fs=fs,
@@ -252,7 +250,7 @@ def main() -> None:  # noqa: PLR0915
                 )
                 ax.set_ylim(0, 60)
                 ax.set_ylabel(f"{labels[ch]}\nFreq [Hz]")
-                if ch == 2:
+                if ch == LAST_CHANNEL_INDEX:
                     ax.set_xlabel("Time [s]")
 
             fig2.tight_layout(rect=[0, 0.03, 1, 0.95])

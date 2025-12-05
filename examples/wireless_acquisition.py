@@ -48,7 +48,9 @@ def main() -> None:  # noqa: PLR0915
     ap.add_argument("port", help="Serial port (e.g., COM3, /dev/ttyUSB0)")
     ap.add_argument("sensor", help="Sensor name to connect to (e.g., HARU2-001)")
     ap.add_argument(
-        "--dll", help="Path to native library file or directory", default=None
+        "--dll",
+        help="Path to native library file or directory",
+        default=None,
     )
     ap.add_argument(
         "--out",

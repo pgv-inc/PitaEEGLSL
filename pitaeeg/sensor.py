@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import contextlib
 import ctypes
 import os
 import platform
@@ -414,7 +415,6 @@ class Sensor:
             msg = "No device connected"
             raise MeasurementError(msg)
 
-        dummy_double = ctypes.c_double(0.0)
         devicetime_ll = ctypes.c_longlong(0)
 
         rc = self._lib.startMeasure2(
@@ -505,16 +505,12 @@ class Sensor:
             - If any step fails, the error is silently ignored.
 
         """
-        try:
+        with contextlib.suppress(Exception):
             self.disconnect()
-        except Exception:
-            pass
 
         if self._handle is not None:
-            try:
+            with contextlib.suppress(Exception):
                 self._lib.Term(self._handle)
-            except Exception:
-                pass
             self._handle = None
 
     def get_battery_remaining_time(self) -> float:
