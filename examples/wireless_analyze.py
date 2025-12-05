@@ -103,7 +103,7 @@ def main() -> None:  # noqa: PLR0915, C901
             ch_r = getattr(res, "ch_r", getattr(res, "ChR", None))
             ch_l = getattr(res, "ch_l", getattr(res, "ChL", None))
 
-            print( # noqa: T201
+            print(  # noqa: T201
                 "[INFO] Contact resistance:"
                 f" ChZ={ch_z:.2f}, ChR={ch_r:.2f}, ChL={ch_l:.2f}",
             )
