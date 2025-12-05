@@ -122,7 +122,7 @@ def _load_library(explicit_path: str | None = None) -> ctypes.CDLL:  # noqa: C90
             if _is_win():
                 parent = c_abs.parent
                 # AddDllDirectory には絶対パスを渡す
-                with os.add_dll_directory(str(parent)):  # type: ignore[attr-defined]
+                with os.add_dll_directory(str(parent)):
                     return ctypes.CDLL(str(c_abs))
             # Windows 以外
             return ctypes.CDLL(str(c_abs))

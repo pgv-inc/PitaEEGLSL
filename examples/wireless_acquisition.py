@@ -22,7 +22,7 @@ def key_pressed_e() -> bool:
     if sys.platform.startswith("win"):
         import msvcrt  # noqa: PLC0415
 
-        return msvcrt.kbhit() and msvcrt.getwch().lower() == "e"  # type: ignore[attr-defined, no-any-return]
+        return msvcrt.kbhit() and msvcrt.getwch().lower() == "e"
     import select  # noqa: PLC0415
     import termios  # noqa: PLC0415
     import tty  # noqa: PLC0415
