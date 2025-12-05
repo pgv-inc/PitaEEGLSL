@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import ctypes
-from typing import ClassVar
+from typing import Any, ClassVar
 
 MAX_CH = 8
 HARU2_CH_NUM = 3
@@ -48,7 +48,7 @@ class SensorParam(ctypes.Structure):
 class ContactResistance(ctypes.Structure):
     """Contact resistance values for each EEG channel."""
 
-    _fields_: ClassVar[list[tuple[str, ctypes.c_float]]] = [
+    _fields_: ClassVar[list[tuple[str, Any]]] = [
         ("ChZ", ctypes.c_float),
         ("ChR", ctypes.c_float),
         ("ChL", ctypes.c_float),
