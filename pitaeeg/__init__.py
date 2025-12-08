@@ -1,6 +1,6 @@
 """PitaEEG LSL for Python."""
 
-__version__ = "0.1.2"
+__version__ = "0.3.0"
 __title__ = "pitaeeg"
 __description__ = "PitaEEG LSL for Python"
 __url__ = "https://github.com/pgv-inc/PitaEEGLSL"
