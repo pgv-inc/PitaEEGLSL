@@ -119,7 +119,9 @@ def main() -> None:  # noqa: PLR0915, C901
             # File name: YYYYMMDDhhmmss.csv (e.g., 20251008154425.csv)
             fn_stem = t_base.strftime("%Y%m%d%H%M%S")
             out_name = args.out or f"{fn_stem}.csv"
+            out_fft_name = args.out or f"{fn_stem}_fft.png"
             out_path = Path(out_name).resolve()
+            out_fft_path = Path(out_fft_name).resolve()
             print(f"[INFO] Writing to: {out_path}")  # noqa: T201
 
             # Create output directory if needed
@@ -254,7 +256,7 @@ def main() -> None:  # noqa: PLR0915, C901
                     ax.set_xlabel("Time [s]")
 
             fig2.tight_layout(rect=[0, 0.03, 1, 0.95])
-
+            plt.savefig(out_fft_path)
             plt.show()
 
     except PitaEEGSensorError as e:
