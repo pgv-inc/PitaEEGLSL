@@ -22,7 +22,7 @@ def key_pressed_e() -> bool:
     if sys.platform.startswith("win"):
         import msvcrt  # noqa: PLC0415
 
-        return msvcrt.kbhit() and msvcrt.getwch().lower() == "e"  # type: ignore[attr-defined, no-any-return]
+        return msvcrt.kbhit() and msvcrt.getwch().lower() == "e"
     import select  # noqa: PLC0415
     import termios  # noqa: PLC0415
     import tty  # noqa: PLC0415
@@ -47,7 +47,11 @@ def main() -> None:  # noqa: PLR0915
     )
     ap.add_argument("port", help="Serial port (e.g., COM3, /dev/ttyUSB0)")
     ap.add_argument("sensor", help="Sensor name to connect to (e.g., HARU2-001)")
-    ap.add_argument("--dll", help="Path to native library file or directory")
+    ap.add_argument(
+        "--dll",
+        help="Path to native library file or directory",
+        default=None,
+    )
     ap.add_argument(
         "--out",
         default=None,
@@ -77,11 +81,11 @@ def main() -> None:  # noqa: PLR0915
 
             # Start measurement
             devicetime_ms = sensor.start_measurement()
-            print(f"[OK] Measurement started (device time: {devicetime_ms}ms)")  # noqa: T201
 
             # Prepare output file
             jst = timezone(timedelta(hours=9))
             t_base = datetime.fromtimestamp(devicetime_ms / 1000.0, tz=jst)
+            print(f"[OK] Measurement started (device time: {t_base})")  # noqa: T201
 
             # File name: YYYYMMDDhhmmss.csv (e.g., 20251008154425.csv)
             fn_stem = t_base.strftime("%Y%m%d%H%M%S")

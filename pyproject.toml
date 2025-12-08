@@ -17,7 +17,6 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = ">=3.11,<4.0"
 
-
 [tool.poetry.group.dev.dependencies]
 pre-commit = "^4.3.0"
 ruff = "^0.14.1"
@@ -31,13 +30,14 @@ sphinx = "^8.2.3"
 sphinx-autodoc-typehints = "^3.5.2"
 sphinx-rtd-theme = "^3.0.2"
 sphinx-pyproject = "^0.3.0"
+numpy = "^2.0.0"
+matplotlib = "^3.9.0"
 
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.pytest.ini_options]
-pythonpaths = ["pitaeeg"]
 testpaths = ["tests"]
 addopts = [
     "-s",
