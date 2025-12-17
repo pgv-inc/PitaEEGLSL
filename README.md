@@ -2,6 +2,8 @@
 
 PitaEEG LSL for Python (`pitaeeg` package)
 
+[![Maintainability](https://qlty.sh/badges/40b7ffbe-a622-4a60-9190-d2545314f095/maintainability.svg)](https://qlty.sh/gh/pgv-inc/projects/PitaEEGLSL)
+[![Code Coverage](https://qlty.sh/badges/40b7ffbe-a622-4a60-9190-d2545314f095/coverage.svg)](https://qlty.sh/gh/pgv-inc/projects/PitaEEGLSL)
 [![Python check](https://github.com/pgv-inc/PitaEEGLSL/actions/workflows/pythonpackage.yml/badge.svg)](https://github.com/pgv-inc/PitaEEGLSL/actions/workflows/pythonpackage.yml)
 
 ## Features
@@ -23,7 +25,7 @@ PitaEEG LSL for Python (`pitaeeg` package)
 - Poetry(pyproject.toml)
 
 ```toml
-pitaeeg = {git = "https://github.com/pgv-inc/PitaEEGLSL.git", rev = "0.3.0"}
+pitaeeg = {git = "https://github.com/pgv-inc/PitaEEGLSL.git", rev = "0.4.0"}
 ```
 
 ```bash
@@ -33,7 +35,7 @@ poetry install
 - pip
 
 ```bash
-pip install git+https://github.com/pgv-inc/PitaEEGLSL.git@0.3.0
+pip install git+https://github.com/pgv-inc/PitaEEGLSL.git@0.4.0
 ```
 
 ### Native Library Setup

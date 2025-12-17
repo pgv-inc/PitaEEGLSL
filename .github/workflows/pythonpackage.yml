@@ -17,9 +17,9 @@ jobs:
       matrix:
         python-version: ["3.12"]
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - name: Python ${{ matrix.python-version }} setup
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: ${{ matrix.python-version }}
       - name: Package install
@@ -34,10 +34,7 @@ jobs:
           # for access to private repo at docker build.
           echo "machine github.com" > $HOME/.netrc && \
           echo "login ${{ secrets.GITHUB_TOKEN }}" >> $HOME/.netrc && \
-          echo "password x-oauth-basic" >> $HOME/.netrc && \
-          echo "machine ${{ secrets.GIT_LFS_URL }}" >> $HOME/.netrc && \
-          echo "login ${{ secrets.GIT_LFS_USERNAME }}" >> $HOME/.netrc && \
-          echo "password ${{ secrets.GIT_LFS_PASSWORD}}" >> $HOME/.netrc
+          echo "password x-oauth-basic" >> $HOME/.netrc
       - name: Install dependencies
         run: |
           cd $GITHUB_WORKSPACE
@@ -61,12 +58,3 @@ jobs:
         run: |
           rm -rf $HOME/.netrc
         if: always()
-      # - name: Notify actions to slack
-      #   uses: 8398a7/action-slack@v3
-      #   with:
-      #     status: ${{ job.status }}
-      #     fields: repo,message,commit,author,action,eventName,ref,workflow,job,took
-      #     author_name: ${{ github.actor }}
-      #   env:
-      #     SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-      #   if: always()
