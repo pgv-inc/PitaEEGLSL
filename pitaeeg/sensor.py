@@ -32,33 +32,68 @@ if TYPE_CHECKING:
 
 
 def _is_win() -> bool:
+    """Check if the current platform is Windows.
+
+    Returns:
+        bool: True if running on Windows, False otherwise.
+
+    """
     return sys.platform.startswith("win")
 
 
 def _is_mac() -> bool:
+    """Check if the current platform is macOS.
+
+    Returns:
+        bool: True if running on macOS, False otherwise.
+
+    """
     return sys.platform.startswith("darwin")
 
 
 def _is_linux() -> bool:
+    """Check if the current platform is Linux.
+
+    Returns:
+        bool: True if running on Linux, False otherwise.
+
+    """
     return sys.platform.startswith("linux")
 
 
 def _get_machine() -> str:
-    """Get machine architecture (arm64, x86_64, etc)."""
+    """Get machine architecture string.
+
+    Returns:
+        str: Machine architecture in lowercase (e.g., 'arm64', 'x86_64').
+
+    """
     return platform.machine().lower()
 
 
 def _load_library(explicit_path: str | None = None) -> ctypes.CDLL:  # noqa: C901, PLR0912
     """Load the native library from the specified path or default locations.
 
+    This function searches for the native library in the following order:
+    1. If explicit_path is provided, searches in that location
+    2. Platform-specific libs directory (e.g., libs/macos/arm64/)
+    3. Package directory
+    4. Current working directory
+
+    On Windows, it uses os.add_dll_directory if available (Python 3.8+)
+    to ensure proper DLL loading.
+
     Args:
-        explicit_path: Path to the library file or directory containing it.
+        explicit_path: Optional path to the library file or directory containing it.
+            If a directory is provided, standard library names are searched.
+            If None, default search locations are used.
 
     Returns:
-        ctypes.CDLL: Loaded library handle.
+        ctypes.CDLL: Loaded library handle ready for use.
 
     Raises:
-        LibraryNotFoundError: If the library could not be found or loaded.
+        LibraryNotFoundError: If the library could not be found or loaded
+            in any of the search locations.
 
     """
     # If a directory is passed, search within it (try with 'd' suffix too)
@@ -144,11 +179,16 @@ def _load_library(explicit_path: str | None = None) -> ctypes.CDLL:  # noqa: C90
 def _bind_api(lib: ctypes.CDLL) -> ctypes.CDLL:
     """Bind API function signatures to the loaded library.
 
+    This function configures the ctypes function signatures (argtypes and restype)
+    for all native API functions in the library. This is required for proper
+    type checking and parameter passing when calling native functions.
+
     Args:
-        lib: ctypes.CDLL library handle.
+        lib: Raw ctypes.CDLL library handle loaded from the native library file.
 
     Returns:
-        ctypes.CDLL: The library with bound function signatures.
+        ctypes.CDLL: The same library handle with all function signatures bound.
+            This allows for type-safe calls to native API functions.
 
     """
     lib.Init.argtypes = [ctypes.c_char_p, ctypes.POINTER(TimesetParam)]
@@ -263,7 +303,7 @@ class Sensor:
         Args:
             port: Serial port name (e.g., "COM3" on Windows, "/dev/ttyUSB0" on Linux).
             library_path: Optional path to the native library file or directory.
-            com_timeout: Communication timeout in milliseconds (default: 2000).
+            com_timeout: Communication timeout in milliseconds (default: 5000).
             scan_timeout: Scan timeout in milliseconds (default: 5000).
 
         Raises:
@@ -295,21 +335,39 @@ class Sensor:
         exc_val: BaseException | None,
         exc_tb: TracebackType | None,
     ) -> None:
-        """Context manager exit."""
+        """Context manager exit.
+
+        Ensures that resources are properly cleaned up when exiting a context.
+        This method calls :meth:`close` to stop measurement, disconnect devices,
+        and release all resources.
+
+        Args:
+            exc_type: Exception type if an exception occurred, None otherwise.
+            exc_val: Exception value if an exception occurred, None otherwise.
+            exc_tb: Traceback if an exception occurred, None otherwise.
+
+        """
         self.close()
 
     def scan_devices(self, timeout: float = 10.0) -> list[dict[str, str]]:
         """Scan for available devices.
 
+        Initiates a device scan operation to discover PitaEEG sensors that are
+        within communication range. The scan continues until devices are found
+        or the timeout expires.
+
         Args:
-            timeout: Scan timeout in seconds (default: 10.0).
+            timeout: Maximum time to wait for devices in seconds (default: 10.0).
+                The scan will stop early if devices are found before the timeout.
 
         Returns:
-            List of dictionaries containing device information.
-            Each dictionary has 'name' and 'id' keys.
+            list[dict[str, str]]: List of dictionaries containing device information.
+                Each dictionary contains:
+                - ``name`` (str): Device name (e.g., "HARU2-001")
+                - ``id`` (str): Device ID as a hexadecimal string
 
         Raises:
-            ScanError: If scanning fails.
+            ScanError: If the sensor is not initialized or scanning fails.
 
         """
         if self._handle is None:
@@ -351,12 +409,20 @@ class Sensor:
     def connect(self, device_name: str, scan_timeout: float = 10.0) -> None:
         """Connect to a specific device.
 
+        Scans for devices and connects to the device matching the specified name.
+        This method must be called before starting measurements. Use
+        :meth:`scan_devices` to discover available device names.
+
         Args:
-            device_name: Name of the device to connect to.
-            scan_timeout: Timeout for scanning in seconds (default: 10.0).
+            device_name: Name of the device to connect to (e.g., "HARU2-001").
+                This should match one of the device names returned by
+                :meth:`scan_devices`.
+            scan_timeout: Maximum time to wait for the device to be found
+                in seconds (default: 10.0).
 
         Raises:
-            SensorConnectionError: If connection fails or device not found.
+            SensorConnectionError: If the sensor is not initialized, device
+                scanning fails, the device is not found, or connection fails.
 
         """
         if self._handle is None:
@@ -406,13 +472,20 @@ class Sensor:
     def start_measurement(self) -> int:
         """Start EEG measurement.
 
-        Starts measurement using all available channels.
+        Starts measurement using all available channels. This method must be
+        called after a device has been connected via :meth:`connect`.
+        After starting measurement, data can be received using :meth:`receive_data`.
+
+        The returned device time represents the timestamp from the sensor device
+        when measurement began, allowing synchronization with the device clock.
 
         Returns:
-            Device time in milliseconds since epoch.
+            int: Device time in milliseconds since epoch (Unix timestamp * 1000).
+                This timestamp represents when the sensor device started measurement.
 
         Raises:
-            MeasurementError: If starting measurement fails.
+            MeasurementError: If the sensor is not initialized, no device is
+                connected, or starting measurement fails.
 
         """
         if self._handle is None:
@@ -440,11 +513,27 @@ class Sensor:
     def receive_data(self) -> Generator[ReceiveData2, None, None]:
         """Receive data from the sensor.
 
+        This method returns a generator that yields EEG data packets as they
+        become available from the sensor. The generator will continue to yield
+        data until measurement is stopped via :meth:`stop_measurement`.
+
+        Each yielded :class:`ReceiveData2` object contains:
+        - EEG channel data (3 channels for HARU2)
+        - Battery level percentage
+        - Data repair/correction flag
+
+        Note:
+            This method blocks until data is available. To stop receiving data,
+            call :meth:`stop_measurement` from another thread or use a timeout
+            mechanism.
+
         Yields:
-            ReceiveData2: Received data structure.
+            ReceiveData2: Received data structure containing EEG measurements
+                and sensor status information.
 
         Raises:
-            MeasurementError: If measurement is not started.
+            MeasurementError: If the sensor is not initialized or measurement
+                is not started.
 
         """
         if self._handle is None:
@@ -661,10 +750,20 @@ class Sensor:
 
     @property
     def is_connected(self) -> bool:
-        """Check if a device is connected."""
+        """Check if a device is currently connected.
+
+        Returns:
+            bool: True if a device is connected, False otherwise.
+
+        """
         return self._connected_device is not None
 
     @property
     def is_measuring(self) -> bool:
-        """Check if measurement is active."""
+        """Check if measurement is currently active.
+
+        Returns:
+            bool: True if measurement is active, False otherwise.
+
+        """
         return self._measuring

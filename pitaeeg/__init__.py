@@ -1,4 +1,49 @@
-"""PitaEEG LSL for Python."""
+"""PitaEEG Sensor Library for Python.
+
+This package provides a Python interface for communicating with PitaEEG
+sensor devices. It enables device discovery, connection, measurement,
+and data acquisition through a high-level API.
+
+The main entry point is the :class:`Sensor` class, which manages the
+connection to a sensor device and provides methods for scanning devices,
+connecting, starting/stopping measurements, and receiving EEG data.
+
+Example:
+    Basic usage of the Sensor class::
+
+        from pitaeeg import Sensor
+
+        # Create and initialize sensor
+        sensor = Sensor(port="COM3")
+
+        # Scan for available devices
+        devices = sensor.scan_devices(timeout=10.0)
+
+        # Connect to a specific device
+        sensor.connect("HARU2-001")
+
+        # Start measurement
+        device_time = sensor.start_measurement()
+
+        # Receive data
+        for data in sensor.receive_data():
+            print(f"Channels: {data.data}, Battery: {data.batlevel}%")
+
+        # Clean up
+        sensor.stop_measurement()
+        sensor.disconnect()
+        sensor.close()
+
+    Using as a context manager::
+
+        with Sensor(port="COM3") as sensor:
+            devices = sensor.scan_devices()
+            sensor.connect("HARU2-001")
+            sensor.start_measurement()
+            for data in sensor.receive_data():
+                process_data(data)
+
+"""
 
 __version__ = "0.3.0"
 __title__ = "pitaeeg"

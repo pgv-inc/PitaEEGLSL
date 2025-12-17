@@ -1,44 +1,4 @@
-DOT_ENV=.env
-GITHUB_NETRC=${HOME}/.netrc
-GITHUB_NETRC_CI=${GITHUB_WORKSPACE}/netrc
-DOCKER_REGISTRY=888888888888.dkr.ecr.ap-northeast-1.amazonaws.com
-
-CNAME=pitaeeg
 PACKAGE_NAME=pitaeeg
-
-TEST_SRC=/root/tests/data/
-TEST_DST=/root/tests/data/
-
-build:
-	DOCKER_BUILDKIT=1 docker build \
-	--progress=plain \
-	--build-arg PACKAGE_NAME=${PACKAGE_NAME} \
-	--build-arg POETRY_WITHOUT="--without dev" \
-	--secret id=github,src="${GITHUB_NETRC}" \
-	-t ${DOCKER_REGISTRY}/${CNAME}:latest \
-	-f Dockerfile .
-
-test:
-	docker run -it --rm \
-	-v ${PWD}/${PACKAGE_NAME}/:/root/${PACKAGE_NAME} \
-	-v ${PWD}/tests:/root/tests \
-	${DOCKER_REGISTRY}/${CNAME}:latest python run.py --src ${TEST_SRC} --dst ${TEST_DST}
-
-build-ci:
-	DOCKER_BUILDKIT=1 docker build \
-	--progress=plain \
-	--build-arg PACKAGE_NAME=${PACKAGE_NAME} \
-	--build-arg POETRY_WITHOUT="--without dev" \
-	--secret id=github,src="${GITHUB_NETRC_CI}" \
-	-t ${DOCKER_REGISTRY}/${CNAME}:latest \
-	-f Dockerfile .
-
-# No TTY mode
-test-ci:
-	docker run -i --rm \
-	-v ${PWD}/${PACKAGE_NAME}/:/root/${PACKAGE_NAME} \
-	-v ${PWD}/tests:/root/tests \
-	${DOCKER_REGISTRY}/${CNAME}:latest python run.py --src ${TEST_SRC} --dst ${TEST_DST}
 
 precommit-install:
 	poetry run pre-commit install
