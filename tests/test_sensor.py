@@ -207,6 +207,51 @@ class TestLoadLibrary:
             assert result == mock_lib
             mock_add_dll.assert_called()
 
+    @patch("pitaeeg.sensor.sys.platform", "win32")
+    @patch("pitaeeg.sensor.ctypes.CDLL")
+    def test_load_library_windows_no_add_dll_directory(
+        self,
+        mock_cdll: Mock,
+    ) -> None:
+        """Test library loading on Windows when add_dll_directory doesn't exist."""
+        from pitaeeg.sensor import _load_library
+        import pitaeeg.sensor
+
+        mock_lib = MagicMock()
+        mock_cdll.return_value = mock_lib
+
+        # Create a mock os module that raises AttributeError for add_dll_directory
+        # This makes getattr(os, "add_dll_directory", None) return None
+        original_os = pitaeeg.sensor.os
+
+        class MockOSModule:
+            def __getattr__(self, name: str):
+                if name == "add_dll_directory":
+                    raise AttributeError(f"module 'os' has no attribute '{name}'")
+                return getattr(original_os, name)
+
+        mock_os = MockOSModule()
+
+        with patch("pitaeeg.sensor.os", mock_os):
+            with patch("pitaeeg.sensor.Path") as mock_path_cls:
+
+                def path_side_effect(arg: str) -> MagicMock:
+                    mock_p = MagicMock()
+                    if "pitaeeg.dll" in str(arg):
+                        mock_p.exists.return_value = True
+                        mock_resolve = MagicMock()
+                        mock_resolve.parent = Path("/some/path")
+                        mock_p.resolve.return_value = mock_resolve
+                    else:
+                        mock_p.exists.return_value = False
+                    return mock_p
+
+                mock_path_cls.side_effect = path_side_effect
+
+                result = _load_library()
+
+                assert result == mock_lib
+
 
 class TestBindApi:
     """Test _bind_api function."""
@@ -1015,3 +1060,276 @@ class TestSensor:
             ctypes.POINTER(ctypes.c_longlong),
         ]
         assert mock_lib.startMeasure2.restype == ctypes.c_int
+
+    @patch("pitaeeg.sensor._load_library")
+    @patch("pitaeeg.sensor._bind_api")
+    def test_get_battery_remaining_time_success(
+        self,
+        mock_bind: Mock,
+        mock_load: Mock,
+        mock_lib: Mock,
+    ) -> None:
+        """Test get_battery_remaining_time returns battery time."""
+        mock_bind.return_value = mock_lib
+        mock_load.return_value = mock_lib
+
+        def mock_get_battery(
+            handle: int,
+            value_ptr: ctypes.POINTER,  # type: ignore[type-arg]
+        ) -> int:
+            value = ctypes.cast(value_ptr, ctypes.POINTER(ctypes.c_double)).contents
+            value.value = 120.5  # 120.5 minutes
+            return 0
+
+        mock_lib.getPgvSensorBatteryRemainingTime.side_effect = mock_get_battery
+
+        sensor = Sensor(port="COM3")
+
+        battery_time = sensor.get_battery_remaining_time()
+
+        assert battery_time == 120.5
+        mock_lib.getPgvSensorBatteryRemainingTime.assert_called_once()
+
+    @patch("pitaeeg.sensor._load_library")
+    @patch("pitaeeg.sensor._bind_api")
+    def test_get_battery_remaining_time_when_handle_none(
+        self,
+        mock_bind: Mock,
+        mock_load: Mock,
+        mock_lib: Mock,
+    ) -> None:
+        """Test get_battery_remaining_time raises error when handle is None."""
+        mock_bind.return_value = mock_lib
+        mock_load.return_value = mock_lib
+
+        sensor = Sensor(port="COM3")
+        sensor._handle = None
+
+        with pytest.raises(MeasurementError, match="not initialized"):
+            sensor.get_battery_remaining_time()
+
+    @patch("pitaeeg.sensor._load_library")
+    @patch("pitaeeg.sensor._bind_api")
+    def test_get_battery_remaining_time_failure(
+        self,
+        mock_bind: Mock,
+        mock_load: Mock,
+        mock_lib: Mock,
+    ) -> None:
+        """Test get_battery_remaining_time raises error when API call fails."""
+        mock_bind.return_value = mock_lib
+        mock_load.return_value = mock_lib
+        mock_lib.getPgvSensorBatteryRemainingTime.return_value = -1  # Error
+
+        sensor = Sensor(port="COM3")
+
+        with pytest.raises(
+            MeasurementError, match="getPgvSensorBatteryRemainingTime failed"
+        ):
+            sensor.get_battery_remaining_time()
+
+    @patch("pitaeeg.sensor._load_library")
+    @patch("pitaeeg.sensor._bind_api")
+    def test_get_version_success(
+        self,
+        mock_bind: Mock,
+        mock_load: Mock,
+        mock_lib: Mock,
+    ) -> None:
+        """Test get_version returns firmware version."""
+        mock_bind.return_value = mock_lib
+        mock_load.return_value = mock_lib
+
+        def mock_get_version(
+            handle: int,
+            value_ptr: ctypes.POINTER,  # type: ignore[type-arg]
+        ) -> int:
+            value = ctypes.cast(value_ptr, ctypes.POINTER(ctypes.c_double)).contents
+            value.value = 2.2  # Version 2.2
+            return 0
+
+        mock_lib.getPgvSensorVersion.side_effect = mock_get_version
+
+        sensor = Sensor(port="COM3")
+
+        version = sensor.get_version()
+
+        assert version == 2.2
+        mock_lib.getPgvSensorVersion.assert_called_once()
+
+    @patch("pitaeeg.sensor._load_library")
+    @patch("pitaeeg.sensor._bind_api")
+    def test_get_version_when_handle_none(
+        self,
+        mock_bind: Mock,
+        mock_load: Mock,
+        mock_lib: Mock,
+    ) -> None:
+        """Test get_version raises error when handle is None."""
+        mock_bind.return_value = mock_lib
+        mock_load.return_value = mock_lib
+
+        sensor = Sensor(port="COM3")
+        sensor._handle = None
+
+        with pytest.raises(MeasurementError, match="not initialized"):
+            sensor.get_version()
+
+    @patch("pitaeeg.sensor._load_library")
+    @patch("pitaeeg.sensor._bind_api")
+    def test_get_version_failure(
+        self,
+        mock_bind: Mock,
+        mock_load: Mock,
+        mock_lib: Mock,
+    ) -> None:
+        """Test get_version raises error when API call fails."""
+        mock_bind.return_value = mock_lib
+        mock_load.return_value = mock_lib
+        mock_lib.getPgvSensorVersion.return_value = -1  # Error
+
+        sensor = Sensor(port="COM3")
+
+        with pytest.raises(MeasurementError, match="getPgvSensorVersion failed"):
+            sensor.get_version()
+
+    @patch("pitaeeg.sensor._load_library")
+    @patch("pitaeeg.sensor._bind_api")
+    def test_get_state_success(
+        self,
+        mock_bind: Mock,
+        mock_load: Mock,
+        mock_lib: Mock,
+    ) -> None:
+        """Test get_state returns sensor state and error."""
+        mock_bind.return_value = mock_lib
+        mock_load.return_value = mock_lib
+
+        def mock_get_state(
+            handle: int,
+            state_ptr: ctypes.POINTER,  # type: ignore[type-arg]
+            err_ptr: ctypes.POINTER,  # type: ignore[type-arg]
+        ) -> int:
+            state = ctypes.cast(state_ptr, ctypes.POINTER(ctypes.c_int)).contents
+            err = ctypes.cast(err_ptr, ctypes.POINTER(ctypes.c_int)).contents
+            state.value = 2  # IDLE state
+            err.value = 0  # No error
+            return 0
+
+        mock_lib.getSensorState.side_effect = mock_get_state
+
+        sensor = Sensor(port="COM3")
+
+        state, error = sensor.get_state()
+
+        assert state == 2
+        assert error == 0
+        mock_lib.getSensorState.assert_called_once()
+
+    @patch("pitaeeg.sensor._load_library")
+    @patch("pitaeeg.sensor._bind_api")
+    def test_get_state_when_handle_none(
+        self,
+        mock_bind: Mock,
+        mock_load: Mock,
+        mock_lib: Mock,
+    ) -> None:
+        """Test get_state raises error when handle is None."""
+        mock_bind.return_value = mock_lib
+        mock_load.return_value = mock_lib
+
+        sensor = Sensor(port="COM3")
+        sensor._handle = None
+
+        with pytest.raises(MeasurementError, match="not initialized"):
+            sensor.get_state()
+
+    @patch("pitaeeg.sensor._load_library")
+    @patch("pitaeeg.sensor._bind_api")
+    def test_get_state_failure(
+        self,
+        mock_bind: Mock,
+        mock_load: Mock,
+        mock_lib: Mock,
+    ) -> None:
+        """Test get_state raises error when API call fails."""
+        mock_bind.return_value = mock_lib
+        mock_load.return_value = mock_lib
+        mock_lib.getSensorState.return_value = -1  # Error
+
+        sensor = Sensor(port="COM3")
+
+        with pytest.raises(MeasurementError, match="getSensorState failed"):
+            sensor.get_state()
+
+    @patch("pitaeeg.sensor._load_library")
+    @patch("pitaeeg.sensor._bind_api")
+    def test_get_contact_resistance_success(
+        self,
+        mock_bind: Mock,
+        mock_load: Mock,
+        mock_lib: Mock,
+    ) -> None:
+        """Test get_contact_resistance returns contact resistance values."""
+        from pitaeeg.types import ContactResistance
+
+        mock_bind.return_value = mock_lib
+        mock_load.return_value = mock_lib
+
+        def mock_get_contact_resistance(
+            handle: int,
+            res_ptr: ctypes.POINTER,  # type: ignore[type-arg]
+        ) -> int:
+            res = ctypes.cast(res_ptr, ctypes.POINTER(ContactResistance)).contents
+            res.ChZ = 1000.0
+            res.ChR = 2000.0
+            res.ChL = 3000.0
+            return 0
+
+        mock_lib.getContactResistance.side_effect = mock_get_contact_resistance
+
+        sensor = Sensor(port="COM3")
+
+        resistance = sensor.get_contact_resistance()
+
+        assert isinstance(resistance, ContactResistance)
+        assert resistance.ChZ == 1000.0
+        assert resistance.ChR == 2000.0
+        assert resistance.ChL == 3000.0
+        mock_lib.getContactResistance.assert_called_once()
+
+    @patch("pitaeeg.sensor._load_library")
+    @patch("pitaeeg.sensor._bind_api")
+    def test_get_contact_resistance_when_handle_none(
+        self,
+        mock_bind: Mock,
+        mock_load: Mock,
+        mock_lib: Mock,
+    ) -> None:
+        """Test get_contact_resistance raises error when handle is None."""
+        mock_bind.return_value = mock_lib
+        mock_load.return_value = mock_lib
+
+        sensor = Sensor(port="COM3")
+        sensor._handle = None
+
+        with pytest.raises(MeasurementError, match="not initialized"):
+            sensor.get_contact_resistance()
+
+    @patch("pitaeeg.sensor._load_library")
+    @patch("pitaeeg.sensor._bind_api")
+    def test_get_contact_resistance_failure(
+        self,
+        mock_bind: Mock,
+        mock_load: Mock,
+        mock_lib: Mock,
+    ) -> None:
+        """Test get_contact_resistance raises error when API call fails."""
+        mock_bind.return_value = mock_lib
+        mock_load.return_value = mock_lib
+        mock_lib.getContactResistance.return_value = -1  # Error
+
+        sensor = Sensor(port="COM3")
+
+        with pytest.raises(MeasurementError, match="getContactResistance failed"):
+            sensor.get_contact_resistance()
