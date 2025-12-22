@@ -30,7 +30,7 @@ sphinx = "^9.0.4"
 sphinx-autodoc-typehints = "^3.6.0"
 sphinx-rtd-theme = "^3.1.0rc1"
 sphinx-pyproject = "^0.3.0"
-numpy = "^2.2.3"
+numpy = "^2.4.0"
 matplotlib = "^3.10.8"
 
 [build-system]
