@@ -25,7 +25,7 @@ PitaEEG LSL for Python (`pitaeeg` package)
 - Poetry(pyproject.toml)
 
 ```toml
-pitaeeg = {git = "https://github.com/pgv-inc/PitaEEGLSL.git", rev = "0.4.0"}
+pitaeeg = {git = "https://github.com/pgv-inc/PitaEEGLSL.git", rev = "0.5.0"}
 ```
 
 ```bash
@@ -35,7 +35,7 @@ poetry install
 - pip
 
 ```bash
-pip install git+https://github.com/pgv-inc/PitaEEGLSL.git@0.4.0
+pip install git+https://github.com/pgv-inc/PitaEEGLSL.git@0.5.0
 ```
 
 ### Native Library Setup
