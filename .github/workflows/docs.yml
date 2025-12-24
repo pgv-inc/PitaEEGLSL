@@ -59,6 +59,15 @@ jobs:
     - name: Setup Pages
       uses: actions/configure-pages@v4
 
+    - name: Copy architecture image
+      run: |
+        mkdir -p docs/source/_static
+        if [ -f pitaeeg.png ]; then
+          cp pitaeeg.png docs/source/_static/
+        elif [ -f ../pitaeeg.png ]; then
+          cp ../pitaeeg.png docs/source/_static/
+        fi
+
     - name: Build documentation
       run: |
         cd docs/source

@@ -5,8 +5,16 @@ Welcome to pitaeeg's documentation!
 
 **pitaeeg** is a Python package that provides an easy-to-use interface for communicating with PitaEEG sensor devices.
 
+System Architecture
+-------------------
+
+.. image:: _static/pitaeeg.png
+   :alt: System Architecture
+   :align: center
+   :width: 800px
+
 .. note::
-   This package requires a proprietary native library. Please contact support@pgv.co.jp for library licensing information.
+   This package requires both the **PitaEEG API native library** and **PitaEEG Sensor hardware**, which are proprietary and require a license. Please contact support@pgv.co.jp for library licensing information.
 
 Quick Start
 -----------
