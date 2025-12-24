@@ -54,16 +54,3 @@ jobs:
     - name: Run tests
       shell: bash
       run: poetry run pytest -s
-
-    - name: Generate coverage report
-      shell: bash
-      run: poetry run pytest --cov-report lcov --cov=pitaeeg -s --runslow
-
-    - name: Upload coverage to Codecov
-      uses: codecov/codecov-action@v5
-      if: matrix.os == 'ubuntu-latest' && matrix.python-version == '3.11'
-      with:
-        files: ./lcov.info
-        flags: unittests
-        name: codecov-umbrella
-        fail_ci_if_error: false
