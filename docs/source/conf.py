@@ -17,7 +17,15 @@ config = SphinxConfig("../../pyproject.toml", globalns=globals())
 project = config.name
 version = config.version
 description = config.description
-author = config.author
+# Handle authors (can be list or string)
+authors_config = config.get("authors", [])
+if isinstance(authors_config, list) and len(authors_config) > 0:
+    if isinstance(authors_config[0], dict):
+        author = authors_config[0].get("name", "Unknown")
+    else:
+        author = str(authors_config[0])
+else:
+    author = str(authors_config) if authors_config else "Unknown"
 copyright = config["copyright"]
 project_copyright = config["copyright"]
 
@@ -34,3 +42,12 @@ language = config["language"]
 
 html_theme = config["html_theme"]
 html_static_path = config["html_static_path"]
+
+# GitHub Pages settings
+html_baseurl = "https://pgv-inc.github.io/PitaEEGLSL/"
+
+# Additional HTML options
+html_title = f"{project} {version} documentation"
+html_show_sourcelink = True
+html_show_sphinx = True
+html_show_copyright = True
