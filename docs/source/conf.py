@@ -43,8 +43,8 @@ language = config["language"]
 html_theme = config["html_theme"]
 html_static_path = config["html_static_path"]
 
-# GitHub Pages settings
-html_baseurl = "https://pgv-inc.github.io/PitaEEGLSL/"
+# Read the Docs settings
+html_baseurl = "https://pitaeeg.readthedocs.io/"
 
 # Additional HTML options
 html_title = f"{project} {version} documentation"

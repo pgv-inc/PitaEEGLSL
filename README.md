@@ -3,7 +3,7 @@
 [![PyPI version](https://badge.fury.io/py/pitaeeg.svg)](https://badge.fury.io/py/pitaeeg)
 [![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Build and Deploy Documentation](https://github.com/pgv-inc/PitaEEGLSL/actions/workflows/docs.yml/badge.svg)](https://github.com/pgv-inc/PitaEEGLSL/actions/workflows/docs.yml)
+[![Documentation Status](https://readthedocs.org/projects/pitaeeg/badge/?version=latest)](https://pitaeeg.readthedocs.io/en/latest/?badge=latest)
 [![CodeQL](https://github.com/pgv-inc/PitaEEGLSL/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/pgv-inc/PitaEEGLSL/actions/workflows/github-code-scanning/codeql)
 [![Python package](https://github.com/pgv-inc/PitaEEGLSL/actions/workflows/pythonpackage.yml/badge.svg)](https://github.com/pgv-inc/PitaEEGLSL/actions/workflows/pythonpackage.yml)
 
@@ -69,7 +69,7 @@ pip install pitaeeg
 #### Poetry
 
 ```toml
-pitaeeg = { git = "https://github.com/pgv-inc/PitaEEGLSL.git", rev = "0.13.0" }
+pitaeeg = { git = "https://github.com/pgv-inc/PitaEEGLSL.git", rev = "0.14.0" }
 ```
 
 ```bash
@@ -79,7 +79,7 @@ poetry install
 #### pip
 
 ```bash
-pip install git+https://github.com/pgv-inc/PitaEEGLSL.git@0.13.0
+pip install git+https://github.com/pgv-inc/PitaEEGLSL.git@0.14.0
 ```
 
 ---
@@ -104,6 +104,19 @@ libs/
 ```
 
 The library is automatically loaded based on the detected platform.
+
+---
+
+## Important Notes
+
+This library provides **only the Python wrapper portion**.  
+The following components are required separately:
+
+- PitaEEG Sensor (hardware)
+- USB Receiver (HB-R2) (hardware)
+- PitaEEG API (licensed native library)
+
+Without these components, this library will not function.
 
 ---
 
@@ -298,7 +311,12 @@ If you publish work using this software, we welcome links to your publications v
 ### Q1. Can I use this package without PitaEEG hardware?
 
 No.  
-This package requires **both** the PitaEEG sensor hardware and a licensed native API library.
+This package requires the following components:
+- PitaEEG Sensor (hardware)
+- USB Receiver (HB-R2) (hardware)
+- PitaEEG API (licensed native library)
+
+Without these components, this library will not function.
 
 ---
 
