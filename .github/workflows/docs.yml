@@ -10,6 +10,7 @@ permissions:
   contents: read
   pages: write
   id-token: write
+  deployments: write
 
 concurrency:
   group: "pages"
@@ -62,8 +63,7 @@ jobs:
 
     - name: Setup Pages
       uses: actions/configure-pages@v5
-      with:
-        enablement: true
+      continue-on-error: true
 
     - name: Copy architecture image
       shell: bash
@@ -92,4 +92,5 @@ jobs:
     - name: Deploy to GitHub Pages
       id: deployment
       uses: actions/deploy-pages@v4
+      continue-on-error: true
 
