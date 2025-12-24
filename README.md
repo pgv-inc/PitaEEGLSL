@@ -1,5 +1,16 @@
 # PitaEEGLSL
 
+[![PyPI version](https://badge.fury.io/py/pitaeeg.svg)](https://badge.fury.io/py/pitaeeg)
+[![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Build and Deploy Documentation](https://github.com/pgv-inc/PitaEEGLSL/actions/workflows/docs.yml/badge.svg?branch=main)](https://github.com/pgv-inc/PitaEEGLSL/actions/workflows/docs.yml)
+[![CodeQL](https://github.com/pgv-inc/PitaEEGLSL/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/pgv-inc/PitaEEGLSL/actions/workflows/github-code-scanning/codeql)
+[![Python package](https://github.com/pgv-inc/PitaEEGLSL/actions/workflows/pythonpackage.yml/badge.svg)](https://github.com/pgv-inc/PitaEEGLSL/actions/workflows/pythonpackage.yml)
+
+[![Maintainability](https://qlty.sh/badges/40b7ffbe-a622-4a60-9190-d2545314f095/maintainability.svg)](https://qlty.sh/gh/pgv-inc/projects/PitaEEGLSL)
+[![Code Coverage](https://qlty.sh/badges/40b7ffbe-a622-4a60-9190-d2545314f095/coverage.svg)](https://qlty.sh/gh/pgv-inc/projects/PitaEEGLSL)
+[![Codecov](https://codecov.io/gh/pgv-inc/PitaEEGLSL/branch/main/graph/badge.svg)](https://codecov.io/gh/pgv-inc/PitaEEGLSL)
+
 ---
 
 ## Non-medical Disclaimer (Important)
@@ -319,43 +330,6 @@ Please include your OS, Python version, and hardware model when reporting issues
 
 ---
 
-## README（日本語概要）
-
-### 本ライブラリについて
-
-**PitaEEGLSL** は、PitaEEG 脳波センサーから取得したデータを  
-**LabStreamingLayer（LSL）** を用いてリアルタイム配信するための Python ライブラリです。
-
-研究用途・開発用途において、以下を目的としています。
-
-- 脳波データのリアルタイム取得
-- LSL を用いた他モダリティとの時間同期
-- 既存の神経科学ツールチェーンとの統合
-
-### 利用対象者
-
-- LSL を用いた実験を行う研究者
-- PitaEEG センサーを Python から制御したい開発者
-- EEG を用いたリアルタイム解析・可視化・ML パイプライン構築者
-
-### 重要な注意事項
-
-本ライブラリは **Python ラッパー部分のみ** を提供します。  
-以下は別途必要となります。
-
-- PitaEEG Sensor（ハードウェア）
-- PitaEEG API（ライセンス提供）
-
-これらがない場合、本ライブラリは動作しません。
-
-### 研究用途について
-
-- 本ソフトウェアは **医療機器ではありません**
-- 診断・治療目的での使用は想定していません
-- 研究・評価・プロトタイピング用途に限定されます
-
----
-
 ## PyPI long_description Notes
 
 This README is optimized to serve directly as the PyPI `long_description`:
@@ -370,3 +344,9 @@ When publishing to PyPI, ensure:
 
 - `long_description = file: README.md`
 - `long_description_content_type = text/markdown`
+
+---
+
+## 日本語版
+
+日本語版のREADMEは [README_ja.md](README_ja.md) をご覧ください。
