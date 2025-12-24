@@ -44,7 +44,7 @@ html_theme = config["html_theme"]
 html_static_path = config["html_static_path"]
 
 # Read the Docs settings
-html_baseurl = "https://pitaeeg.readthedocs.io/"
+html_baseurl = "https://pitaeeglsl.readthedocs.io/"
 
 # Additional HTML options
 html_title = f"{project} {version} documentation"

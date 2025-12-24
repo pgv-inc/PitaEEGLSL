@@ -2,7 +2,7 @@
 
 [![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Documentation Status](https://readthedocs.org/projects/pitaeeg/badge/?version=latest)](https://pitaeeg.readthedocs.io/en/latest/?badge=latest)
+[![Documentation Status](https://readthedocs.org/projects/pitaeeglsl/badge/?version=latest)](https://pitaeeglsl.readthedocs.io/en/latest/?badge=latest)
 [![CodeQL](https://github.com/pgv-inc/PitaEEGLSL/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/pgv-inc/PitaEEGLSL/actions/workflows/github-code-scanning/codeql)
 [![Python package](https://github.com/pgv-inc/PitaEEGLSL/actions/workflows/pythonpackage.yml/badge.svg)](https://github.com/pgv-inc/PitaEEGLSL/actions/workflows/pythonpackage.yml)
 
@@ -61,7 +61,7 @@ Downstream tools (LabRecorder, MNE, custom pipelines)
 #### Poetry
 
 ```toml
-pitaeeg = { git = "https://github.com/pgv-inc/PitaEEGLSL.git", rev = "0.16.0" }
+pitaeeg = { git = "https://github.com/pgv-inc/PitaEEGLSL.git", rev = "0.17.0" }
 ```
 
 ```bash
@@ -71,7 +71,7 @@ poetry install
 #### pip
 
 ```bash
-pip install git+https://github.com/pgv-inc/PitaEEGLSL.git@0.16.0
+pip install git+https://github.com/pgv-inc/PitaEEGLSL.git@0.17.0
 ```
 
 ---
