@@ -9,6 +9,14 @@ PitaEEG LSL(LabStreamingLayer) for Python (`pitaeeg` package)
 
 📖 **[Full Documentation](https://pgv-inc.github.io/PitaEEGLSL/)** | 🐛 [Report Bug](https://github.com/pgv-inc/PitaEEGLSL/issues) | 💬 [Ask Question](https://github.com/pgv-inc/PitaEEGLSL/discussions)
 
+> **⚠️ Important Notice**
+> 
+> This package requires the **PitaEEG API native library**, which is **proprietary and requires a license**. The native library is not included in this package and must be obtained separately.
+> 
+> **To obtain the native library, please contact:** <support@pgv.co.jp>
+> 
+> Without the native library, this package will not function. Please ensure you have obtained the library before attempting to use this package.
+
 ## Features
 
 - Easy-to-use Python interface for PitaEEGSensor
@@ -16,8 +24,6 @@ PitaEEG LSL(LabStreamingLayer) for Python (`pitaeeg` package)
 - Context manager support for safe resource management
 - Type hints for better IDE support
 - Comprehensive error handling with custom exceptions
-
-**Note**: This package requires a proprietary native library. Please contact `support@pgv.co.jp` for library licensing information.
 
 ## Requirements
 
