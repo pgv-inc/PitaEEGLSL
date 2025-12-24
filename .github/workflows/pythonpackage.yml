@@ -51,15 +51,15 @@ jobs:
 
     - name: Run linters
       shell: bash
-      run: poetry run make check
+      run: poetry run pre-commit run --all-files
 
     - name: Run tests
       shell: bash
-      run: poetry run make pytest
+      run: poetry run pytest -s
 
     - name: Generate coverage report
       shell: bash
-      run: poetry run make coverage-pytest
+      run: poetry run pytest --cov-report lcov --cov=pitaeeg -s --runslow
 
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v5
