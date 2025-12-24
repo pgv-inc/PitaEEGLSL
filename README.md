@@ -1,42 +1,58 @@
 # PitaEEGLSL
 
-PitaEEG LSL(LabStreamingLayer) for Python (`pitaeeg` package)
+[![PyPI version](https://badge.fury.io/py/pitaeeg.svg)](https://badge.fury.io/py/pitaeeg)
+[![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Build and Deploy Documentation](https://github.com/pgv-inc/PitaEEGLSL/actions/workflows/docs.yml/badge.svg?branch=main)](https://github.com/pgv-inc/PitaEEGLSL/actions/workflows/docs.yml)
+[![CodeQL](https://github.com/pgv-inc/PitaEEGLSL/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/pgv-inc/PitaEEGLSL/actions/workflows/github-code-scanning/codeql)
+[![Python package](https://github.com/pgv-inc/PitaEEGLSL/actions/workflows/pythonpackage.yml/badge.svg)](https://github.com/pgv-inc/PitaEEGLSL/actions/workflows/pythonpackage.yml)
 
 [![Maintainability](https://qlty.sh/badges/40b7ffbe-a622-4a60-9190-d2545314f095/maintainability.svg)](https://qlty.sh/gh/pgv-inc/projects/PitaEEGLSL)
 [![Code Coverage](https://qlty.sh/badges/40b7ffbe-a622-4a60-9190-d2545314f095/coverage.svg)](https://qlty.sh/gh/pgv-inc/projects/PitaEEGLSL)
-[![Python check](https://github.com/pgv-inc/PitaEEGLSL/actions/workflows/pythonpackage.yml/badge.svg)](https://github.com/pgv-inc/PitaEEGLSL/actions/workflows/pythonpackage.yml)
-[![Documentation](https://github.com/pgv-inc/PitaEEGLSL/actions/workflows/docs.yml/badge.svg)](https://github.com/pgv-inc/PitaEEGLSL/actions/workflows/docs.yml)
+[![Codecov](https://codecov.io/gh/pgv-inc/PitaEEGLSL/branch/main/graph/badge.svg)](https://codecov.io/gh/pgv-inc/PitaEEGLSL)
 
-📖 **[Full Documentation](https://pgv-inc.github.io/PitaEEGLSL/)** | 🐛 [Report Bug](https://github.com/pgv-inc/PitaEEGLSL/issues) | 💬 [Ask Question](https://github.com/pgv-inc/PitaEEGLSL/discussions)
+---
+
+## Non-medical Disclaimer (Important)
+
+This software and the associated PitaEEG sensors are **not medical devices**.
+
+- This package is **not intended for diagnosis, treatment, prevention, or mitigation of any disease or medical condition**.
+- Results obtained using this software **must not be used for clinical decision-making**.
+- Use in clinical workflows, patient diagnosis, or regulated medical contexts is **explicitly discouraged**.
+- This software is intended solely for **research, evaluation, education, and prototyping purposes**.
+
+Users are responsible for ensuring that their use of this software complies with applicable laws, regulations, and institutional review requirements.
+
+---
 
 ## System Architecture
 
 ![System Architecture](pitaeeg.png)
 
-> **⚠️ Important Notice**
-> 
-> This package requires both the **PitaEEG API native library** and **PitaEEG Sensor hardware**, which are **proprietary and require a license**. 
-> 
-> - **PitaEEG API**: The native library is not included in this package and must be obtained separately.
-> - **PitaEEG Sensor**: Physical hardware device is required for operation.
-> 
-> **To obtain the native library and sensor, please contact:** <support@pgv.co.jp>
-> 
-> Without both the native library and sensor hardware, this package will not function. Please ensure you have obtained both before attempting to use this package.
+**Data flow:**
 
-## Features
+```text
+PitaEEG Sensor
+   ↓
+PitaEEG API (C/C++)
+   ↓
+Python wrapper (pitaeeg)
+   ↓
+LabStreamingLayer (LSL)
+   ↓
+Downstream tools (LabRecorder, MNE, custom pipelines)
+```
 
-- Easy-to-use Python interface for PitaEEGSensor
-- Automatic platform detection and native library loading
-- Context manager support for safe resource management
-- Type hints for better IDE support
-- Comprehensive error handling with custom exceptions
+---
 
 ## Requirements
 
-- make >=4.3
-- Python >3.11, <4.0
-- Poetry >=2.1
+- Python > 3.11, < 4.0
+- make >= 4.3
+- Poetry >= 2.1 (for development)
+
+---
 
 ## Installation
 
@@ -48,70 +64,64 @@ pip install pitaeeg
 
 ### From GitHub
 
-- Poetry(pyproject.toml)
+#### Poetry
 
 ```toml
-pitaeeg = {git = "https://github.com/pgv-inc/PitaEEGLSL.git", rev = "0.11.0"}
+pitaeeg = { git = "https://github.com/pgv-inc/PitaEEGLSL.git", rev = "0.12.0" }
 ```
 
 ```bash
 poetry install
 ```
 
-- pip
+#### pip
 
 ```bash
-pip install git+https://github.com/pgv-inc/PitaEEGLSL.git@0.11.0
+pip install git+https://github.com/pgv-inc/PitaEEGLSL.git@0.12.0
 ```
 
-### Native Library Setup
+---
 
-**Important**: The native API library is proprietary and requires a license. Please contact <support@pgv.co.jp> for inquiries about obtaining the library.
+## Native Library Setup
 
-Once you have obtained the native library, place it in the `libs/` directory according to your platform:
+> **Important**: The native API library is proprietary and requires a license.
 
-```bash
+Once you have obtained the native library, place it under the `libs/` directory:
+
+```text
 libs/
 ├── linux/
-│   └── libpitaeeg.so (or libpitaeeg.so.x.x.x)
+│   └── libpitaeeg.so
 ├── macos/
 │   ├── arm64/
-│   │   └── libpitaeeg.dylib (or libpitaeeg.x.x.x.dylib)
+│   │   └── libpitaeeg.dylib
 │   └── x86_64/
-│       └── libpitaeeg.dylib (or libpitaeeg.x.x.x.dylib)
+│       └── libpitaeeg.dylib
 └── windows/
-    └── pitaeeg.dll (or pitaeeg.dll)
+    └── pitaeeg.dll
 ```
 
-The library will be automatically loaded from the appropriate platform directory.
+The library is automatically loaded based on the detected platform.
 
-## Usage
+---
 
-### Basic Example
+## Quick Start
 
 ```python
 from pitaeeg import Sensor
 
-# Initialize and connect to sensor
 with Sensor(port="COM3") as sensor:
-    # Scan and connect to device
     sensor.connect("HARU2-001", scan_timeout=10.0)
-    
-    # Start measurement
-    devicetime_ms = sensor.start_measurement()
-    
-    # Receive data
+    sensor.start_measurement()
+
     for data in sensor.receive_data():
-        ch_z = float(data.data[0])  # Channel Z
-        ch_r = float(data.data[1])  # Channel R
-        ch_l = float(data.data[2])  # Channel L
-        battery = float(data.batlevel)
-        
-        print(f"ChZ: {ch_z:.2f}, ChR: {ch_r:.2f}, ChL: {ch_l:.2f}, Bat: {battery:.2f}")
-        
-        # Process your data here...
-        break  # Remove this to continuously receive data
+        print(data.data)
+        break
 ```
+
+---
+
+## Usage Examples
 
 ### Scan for Available Devices
 
@@ -121,115 +131,222 @@ from pitaeeg import Sensor
 with Sensor(port="COM3") as sensor:
     devices = sensor.scan_devices(timeout=10.0)
     for device in devices:
-        print(f"Found: {device['name']} (ID: {device['id']})")
+        print(f"{device['name']} ({device['id']})")
 ```
 
 ### Save Data to CSV
-
-See the complete example in `examples/wireless_acquisition.py`:
 
 ```bash
 python examples/wireless_acquisition.py COM3 HARU2-001 --out output.csv
 ```
 
-Or run it directly:
+---
 
-```bash
-./examples/wireless_acquisition.py COM3 HARU2-001
+## API Overview
+
+### Sensor
+
+#### Constructor
+
+```python
+Sensor(
+    port: str,
+    library_path: str | None = None,
+    com_timeout: int = 2000,
+    scan_timeout: int = 5000,
+)
 ```
 
-### API Reference
+#### Core Methods
 
-#### Sensor Class
+- `scan_devices(timeout=10.0)`
+- `connect(device_name, scan_timeout=10.0)`
+- `start_measurement(enabled_channels=None)`
+- `receive_data()`
+- `stop_measurement()`
+- `disconnect()`
+- `close()`
 
-**Constructor:**
+#### Properties
 
-- `Sensor(port, library_path=None, com_timeout=2000, scan_timeout=5000)`
+- `is_connected`
+- `is_measuring`
 
-**Methods:**
+---
 
-- `scan_devices(timeout=10.0)` - Scan for available devices
-- `connect(device_name, scan_timeout=10.0)` - Connect to a specific device
-- `start_measurement(enabled_channels=None)` - Start data acquisition
-- `receive_data()` - Generator that yields received data
-- `stop_measurement()` - Stop data acquisition
-- `disconnect()` - Disconnect from device
-- `close()` - Close sensor interface
-
-**Properties:**
-
-- `is_connected` - Check if device is connected
-- `is_measuring` - Check if measurement is active
-
-#### Exceptions
+## Error Handling
 
 All exceptions inherit from `PitaEEGSensorError`:
 
-- `LibraryNotFoundError` - Native library not found
-- `InitializationError` - Sensor initialization failed
-- `ScanError` - Device scanning failed
-- `SensorConnectionError` - Device connection failed
-- `MeasurementError` - Measurement operation failed
+- `LibraryNotFoundError`
+- `InitializationError`
+- `ScanError`
+- `SensorConnectionError`
+- `MeasurementError`
+
+---
 
 ## Development
 
-### Setup
+This project follows modern Python OSS best practices:
 
-Install pre-commit hooks for automatic code formatting and linting:
+- Static typing (`mypy`)
+- Automated linting and formatting (`ruff`)
+- CI with GitHub Actions
+- Coverage tracking
+
+### Setup
 
 ```bash
 make precommit-install
 ```
 
-### Code Quality
-
-Run linters and formatters:
+### Run checks
 
 ```bash
 make check
 ```
 
-This will run:
-
-- `ruff` - Fast Python linter
-- `ruff-format` - Code formatter
-- `mypy` - Static type checker
-- Various pre-commit hooks
-
-### Testing
-
-Run all tests:
+### Run tests
 
 ```bash
 make pytest
 ```
 
-Run tests in parallel:
-
-```bash
-make pytest-dist
-```
-
-Generate coverage report:
-
-```bash
-make coverage
-```
-
-Generate coverage report in parallel:
-
-```bash
-make coverage-dist
-```
+---
 
 ## Contributing
 
-Contributions are welcome! Please read our [Contributing Guide](.github/CONTRIBUTING.md) for details on our code of conduct and the process for submitting pull requests.
+Contributions are welcome.  
+Please read [CONTRIBUTING.md](.github/CONTRIBUTING.md) before submitting a pull request.
+
+---
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+MIT License  
+See [LICENSE](LICENSE) for details.
+
+---
 
 ## Security
 
-For security vulnerabilities, please see [SECURITY.md](SECURITY.md).
+For security-related issues, see [SECURITY.md](SECURITY.md).
+
+---
+
+## Design Philosophy: Why LabStreamingLayer (LSL)?
+
+PitaEEGLSL is intentionally designed around **LabStreamingLayer (LSL)** rather than providing a bespoke streaming or file-based interface.
+
+The rationale is as follows:
+
+### Why LSL?
+
+LSL has become a **de facto standard** in neuroscience and psychophysiology research for real-time data synchronization.  
+By adopting LSL, PitaEEGLSL enables:
+
+- **Time-synchronized multimodal experiments**  
+  EEG data can be aligned with behavioral tasks, eye tracking, motion capture, or physiological signals.
+- **Interoperability with existing tools**  
+  Compatible with LabRecorder, MNE, EEGLAB, BCILAB, and custom LSL-based pipelines.
+- **Reproducible research workflows**  
+  Separation of acquisition, recording, and analysis improves experimental transparency.
+- **Low-latency, real-time streaming**  
+  Suitable for neurofeedback, online analysis, and closed-loop experiments.
+
+### Design Principles
+
+- **Thin Python wrapper**  
+  The Python layer intentionally avoids duplicating logic already handled by the native API or LSL.
+- **Explicit lifecycle management**  
+  Context managers ensure deterministic resource cleanup.
+- **Research-first ergonomics**  
+  APIs favor clarity and robustness over convenience shortcuts.
+
+This design allows PitaEEGLSL to integrate naturally into existing LSL-based research ecosystems rather than creating a parallel, incompatible workflow.
+
+---
+
+## Academic Use & Citation
+
+If you use **PitaEEGLSL** or **PitaEEG sensors** in academic research, please cite the software and hardware appropriately.
+
+### Software Citation
+
+```bibtex
+@software{pitaeeglsl,
+  title        = {PitaEEGLSL: Python interface for PitaEEG and LabStreamingLayer},
+  author       = {{PGV Inc.}},
+  year         = {2025},
+  url          = {https://github.com/pgv-inc/PitaEEGLSL}
+}
+```
+
+### Hardware Reference
+
+Please refer to PitaEEG hardware documentation provided by PGV Inc. when describing experimental apparatus.
+
+If you publish work using this software, we welcome links to your publications via GitHub Discussions.
+
+---
+
+## FAQ (Frequently Asked Questions)
+
+### Q1. Can I use this package without PitaEEG hardware?
+
+No.  
+This package requires **both** the PitaEEG sensor hardware and a licensed native API library.
+
+---
+
+### Q2. Can I use this without LabStreamingLayer (LSL)?
+
+LSL is a core design assumption of this package.  
+While the Python API exposes raw data objects, the intended use is **LSL-based streaming**.
+
+---
+
+### Q3. Is this package suitable for clinical or diagnostic use?
+
+No.  
+This software is intended for **research and development purposes only** and is **not certified as a medical device or SaMD**.
+
+---
+
+### Q4. Does this package support offline data analysis?
+
+Data recording is typically handled via **LabRecorder** or other LSL-compatible tools.  
+Offline analysis should be performed on recorded data using external toolchains (e.g., MNE, EEGLAB).
+
+---
+
+### Q5. Where should I report bugs or ask questions?
+
+- Bug reports: GitHub Issues  
+- Usage questions: GitHub Discussions  
+
+Please include your OS, Python version, and hardware model when reporting issues.
+
+---
+
+## PyPI long_description Notes
+
+This README is optimized to serve directly as the PyPI `long_description`:
+
+- Clear audience definition at the top
+- Early disclosure of proprietary dependencies
+- Concise Quick Start
+- Explicit research and non-clinical scope
+- Citation and FAQ sections to reduce Issues
+
+When publishing to PyPI, ensure:
+
+- `long_description = file: README.md`
+- `long_description_content_type = text/markdown`
+
+---
+
+## 日本語版
+
+日本語版のREADMEは [README_ja.md](README_ja.md) をご覧ください。
