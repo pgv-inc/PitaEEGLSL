@@ -61,7 +61,7 @@ Downstream tools (LabRecorder, MNE, custom pipelines)
 #### Poetry
 
 ```toml
-pitaeeg = { git = "https://github.com/pgv-inc/PitaEEGLSL.git", rev = "0.14.0" }
+pitaeeg = { git = "https://github.com/pgv-inc/PitaEEGLSL.git", rev = "0.15.0" }
 ```
 
 ```bash
@@ -71,7 +71,7 @@ poetry install
 #### pip
 
 ```bash
-pip install git+https://github.com/pgv-inc/PitaEEGLSL.git@0.14.0
+pip install git+https://github.com/pgv-inc/PitaEEGLSL.git@0.15.0
 ```
 
 ---
