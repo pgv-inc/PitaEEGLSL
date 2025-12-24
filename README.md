@@ -1,6 +1,5 @@
 # PitaEEGLSL
 
-[![PyPI version](https://badge.fury.io/py/pitaeeg.svg)](https://badge.fury.io/py/pitaeeg)
 [![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Documentation Status](https://readthedocs.org/projects/pitaeeg/badge/?version=latest)](https://pitaeeg.readthedocs.io/en/latest/?badge=latest)
@@ -56,12 +55,6 @@ Downstream tools (LabRecorder, MNE, custom pipelines)
 ---
 
 ## Installation
-
-### From PyPI (Recommended)
-
-```bash
-pip install pitaeeg
-```
 
 ### From GitHub
 
