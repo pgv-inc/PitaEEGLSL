@@ -9,7 +9,6 @@
 
 [![Maintainability](https://qlty.sh/badges/40b7ffbe-a622-4a60-9190-d2545314f095/maintainability.svg)](https://qlty.sh/gh/pgv-inc/projects/PitaEEGLSL)
 [![Code Coverage](https://qlty.sh/badges/40b7ffbe-a622-4a60-9190-d2545314f095/coverage.svg)](https://qlty.sh/gh/pgv-inc/projects/PitaEEGLSL)
-[![Codecov](https://codecov.io/gh/pgv-inc/PitaEEGLSL/branch/main/graph/badge.svg)](https://codecov.io/gh/pgv-inc/PitaEEGLSL)
 
 ---
 
