@@ -45,5 +45,5 @@ repos:
       - id: check-added-large-files
         args: ["--maxkb=90000"]
       - id: debug-statements
-
-
+      - id: detect-private-key
+  

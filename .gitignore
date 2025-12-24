@@ -428,6 +428,7 @@ instance/
 
 # Sphinx documentation
 docs/_build/
+docs/build/
 
 # PyBuilder
 .pybuilder/
@@ -672,3 +673,20 @@ $RECYCLE.BIN/
 *.so.*
 *.lib
 *.dylib
+
+### Security files ###
+# AWS credentials
+.aws/
+aws-credentials.json
+.aws-credentials
+*credentials*.json
+*credentials*.yaml
+*credentials*.yml
+*credentials*.toml
+*secrets*.json
+*secrets*.yaml
+*secrets*.yml
+*secrets*.toml
+
+# detect-secrets baseline (should be committed, but can be ignored if preferred)
+# .secrets.baseline

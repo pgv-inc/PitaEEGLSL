@@ -1,10 +1,13 @@
 # PitaEEGLSL
 
-PitaEEG LSL for Python (`pitaeeg` package)
+PitaEEG LSL(LabStreamingLayer) for Python (`pitaeeg` package)
 
 [![Maintainability](https://qlty.sh/badges/40b7ffbe-a622-4a60-9190-d2545314f095/maintainability.svg)](https://qlty.sh/gh/pgv-inc/projects/PitaEEGLSL)
 [![Code Coverage](https://qlty.sh/badges/40b7ffbe-a622-4a60-9190-d2545314f095/coverage.svg)](https://qlty.sh/gh/pgv-inc/projects/PitaEEGLSL)
 [![Python check](https://github.com/pgv-inc/PitaEEGLSL/actions/workflows/pythonpackage.yml/badge.svg)](https://github.com/pgv-inc/PitaEEGLSL/actions/workflows/pythonpackage.yml)
+[![Documentation](https://github.com/pgv-inc/PitaEEGLSL/actions/workflows/docs.yml/badge.svg)](https://pgv-inc.github.io/PitaEEGLSL/)
+
+📖 **[Full Documentation](https://pgv-inc.github.io/PitaEEGLSL/)** | 🐛 [Report Bug](https://github.com/pgv-inc/PitaEEGLSL/issues) | 💬 [Ask Question](https://github.com/pgv-inc/PitaEEGLSL/discussions)
 
 ## Features
 
@@ -14,6 +17,8 @@ PitaEEG LSL for Python (`pitaeeg` package)
 - Type hints for better IDE support
 - Comprehensive error handling with custom exceptions
 
+**Note**: This package requires a proprietary native library. Please contact `support@pgv.co.jp` for library licensing information.
+
 ## Requirements
 
 - make >=4.3
@@ -22,10 +27,18 @@ PitaEEG LSL for Python (`pitaeeg` package)
 
 ## Installation
 
+### From PyPI (Recommended)
+
+```bash
+pip install pitaeeg
+```
+
+### From GitHub
+
 - Poetry(pyproject.toml)
 
 ```toml
-pitaeeg = {git = "https://github.com/pgv-inc/PitaEEGLSL.git", rev = "0.5.0"}
+pitaeeg = {git = "https://github.com/pgv-inc/PitaEEGLSL.git", rev = "0.6.0"}
 ```
 
 ```bash
@@ -35,12 +48,14 @@ poetry install
 - pip
 
 ```bash
-pip install git+https://github.com/pgv-inc/PitaEEGLSL.git@0.5.0
+pip install git+https://github.com/pgv-inc/PitaEEGLSL.git@0.6.0
 ```
 
 ### Native Library Setup
 
-The native API library must be placed in the `libs/` directory according to your platform:
+**Important**: The native API library is proprietary and requires a license. Please contact <support@pgv.co.jp> for inquiries about obtaining the library.
+
+Once you have obtained the native library, place it in the `libs/` directory according to your platform:
 
 ```bash
 libs/
@@ -193,3 +208,15 @@ Generate coverage report in parallel:
 ```bash
 make coverage-dist
 ```
+
+## Contributing
+
+Contributions are welcome! Please read our [Contributing Guide](.github/CONTRIBUTING.md) for details on our code of conduct and the process for submitting pull requests.
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Security
+
+For security vulnerabilities, please see [SECURITY.md](SECURITY.md).

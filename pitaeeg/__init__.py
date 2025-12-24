@@ -45,9 +45,9 @@ Example:
 
 """
 
-__version__ = "0.5.0"
+__version__ = "0.6.0"
 __title__ = "pitaeeg"
-__description__ = "PitaEEG LSL for Python"
+__description__ = "PitaEEG LSL(LabStreamingLayer) for Python"
 __url__ = "https://github.com/pgv-inc/PitaEEGLSL"
 __author__ = "kezure <3447723+kezure@users.noreply.github.com>"
 

@@ -1,15 +1,37 @@
 [project]
 name = "pitaeeg"
-version = "0.5.0"
-description = "PitaEEG LSL for Python"
-
-[[project.authors]]
-name = "kezure <3447723+kezure@users.noreply.github.com>"
+version = "0.6.0"
+description = "PitaEEG LSL(LabStreamingLayer) for Python"
+readme = "README.md"
+requires-python = ">=3.11,<4.0"
+license = {text = "MIT"}
+authors = [
+    {name = "kezure", email = "3447723+kezure@users.noreply.github.com"}
+]
+keywords = ["eeg", "sensor", "labstreaminglayer", "lsl", "pitaeeg", "neuroscience"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Scientific/Engineering",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+[project.urls]
+Homepage = "https://github.com/pgv-inc/PitaEEGLSL"
+Documentation = "https://pgv-inc.github.io/PitaEEGLSL/"
+Repository = "https://github.com/pgv-inc/PitaEEGLSL"
+Issues = "https://github.com/pgv-inc/PitaEEGLSL/issues"
 
 [tool.poetry]
 name = "pitaeeg"
-version = "0.5.0"
-description = "PitaEEG LSL for Python"
+version = "0.6.0"
+description = "PitaEEG LSL(LabStreamingLayer) for Python"
 authors = ["kezure <3447723+kezure@users.noreply.github.com>"]
 license = "MIT"
 readme = "README.md"
