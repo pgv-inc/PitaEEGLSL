@@ -1,3 +1,5 @@
+# PitaEEGLSL
+
 ---
 
 ## Non-medical Disclaimer (Important)
@@ -19,10 +21,10 @@ Users are responsible for ensuring that their use of this software complies with
 
 **Data flow:**
 
-```
+```text
 PitaEEG Sensor
    ↓
-PitaEEG Native API (C/C++)
+PitaEEG API (C/C++)
    ↓
 Python wrapper (pitaeeg)
    ↓
@@ -133,7 +135,7 @@ python examples/wireless_acquisition.py COM3 HARU2-001 --out output.csv
 
 ### Sensor
 
-**Constructor**
+#### Constructor
 
 ```python
 Sensor(
@@ -144,7 +146,7 @@ Sensor(
 )
 ```
 
-**Core Methods**
+#### Core Methods
 
 - `scan_devices(timeout=10.0)`
 - `connect(device_name, scan_timeout=10.0)`
@@ -154,7 +156,7 @@ Sensor(
 - `disconnect()`
 - `close()`
 
-**Properties**
+#### Properties
 
 - `is_connected`
 - `is_measuring`
@@ -341,8 +343,8 @@ Please include your OS, Python version, and hardware model when reporting issues
 本ライブラリは **Python ラッパー部分のみ** を提供します。  
 以下は別途必要となります。
 
-- PitaEEG センサーハードウェア
-- PitaEEG ネイティブ API（ライセンス提供）
+- PitaEEG Sensor（ハードウェア）
+- PitaEEG API（ライセンス提供）
 
 これらがない場合、本ライブラリは動作しません。
 
