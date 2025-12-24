@@ -34,6 +34,8 @@
 
 ```text
 PitaEEG Sensor
+   ↓ (BLE)
+USB Receiver (HB-R2) → COM port
    ↓
 PitaEEG API (C/C++)
    ↓
@@ -67,7 +69,7 @@ pip install pitaeeg
 #### Poetry
 
 ```toml
-pitaeeg = { git = "https://github.com/pgv-inc/PitaEEGLSL.git", rev = "0.12.0" }
+pitaeeg = { git = "https://github.com/pgv-inc/PitaEEGLSL.git", rev = "0.13.0" }
 ```
 
 ```bash
@@ -77,7 +79,7 @@ poetry install
 #### pip
 
 ```bash
-pip install git+https://github.com/pgv-inc/PitaEEGLSL.git@0.12.0
+pip install git+https://github.com/pgv-inc/PitaEEGLSL.git@0.13.0
 ```
 
 ---

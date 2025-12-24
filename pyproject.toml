@@ -1,6 +1,6 @@
 [project]
 name = "pitaeeg"
-version = "0.12.0"
+version = "0.13.0"
 description = "PitaEEG LSL(LabStreamingLayer) for Python"
 readme = "README.md"
 requires-python = ">=3.11,<4.0"
@@ -30,7 +30,7 @@ Issues = "https://github.com/pgv-inc/PitaEEGLSL/issues"
 
 [tool.poetry]
 name = "pitaeeg"
-version = "0.12.0"
+version = "0.13.0"
 description = "PitaEEG LSL(LabStreamingLayer) for Python"
 authors = ["kezure <3447723+kezure@users.noreply.github.com>"]
 license = "MIT"
