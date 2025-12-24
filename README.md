@@ -9,13 +9,20 @@ PitaEEG LSL(LabStreamingLayer) for Python (`pitaeeg` package)
 
 📖 **[Full Documentation](https://pgv-inc.github.io/PitaEEGLSL/)** | 🐛 [Report Bug](https://github.com/pgv-inc/PitaEEGLSL/issues) | 💬 [Ask Question](https://github.com/pgv-inc/PitaEEGLSL/discussions)
 
+## System Architecture
+
+![System Architecture](pitaeeg.png)
+
 > **⚠️ Important Notice**
 > 
-> This package requires the **PitaEEG API native library**, which is **proprietary and requires a license**. The native library is not included in this package and must be obtained separately.
+> This package requires both the **PitaEEG API native library** and **PitaEEG Sensor hardware**, which are **proprietary and require a license**. 
 > 
-> **To obtain the native library, please contact:** <support@pgv.co.jp>
+> - **PitaEEG API**: The native library is not included in this package and must be obtained separately.
+> - **PitaEEG Sensor**: Physical hardware device is required for operation.
 > 
-> Without the native library, this package will not function. Please ensure you have obtained the library before attempting to use this package.
+> **To obtain the native library and sensor, please contact:** <support@pgv.co.jp>
+> 
+> Without both the native library and sensor hardware, this package will not function. Please ensure you have obtained both before attempting to use this package.
 
 ## Features
 
@@ -44,7 +51,7 @@ pip install pitaeeg
 - Poetry(pyproject.toml)
 
 ```toml
-pitaeeg = {git = "https://github.com/pgv-inc/PitaEEGLSL.git", rev = "0.6.0"}
+pitaeeg = {git = "https://github.com/pgv-inc/PitaEEGLSL.git", rev = "0.7.0"}
 ```
 
 ```bash
@@ -54,7 +61,7 @@ poetry install
 - pip
 
 ```bash
-pip install git+https://github.com/pgv-inc/PitaEEGLSL.git@0.6.0
+pip install git+https://github.com/pgv-inc/PitaEEGLSL.git@0.7.0
 ```
 
 ### Native Library Setup

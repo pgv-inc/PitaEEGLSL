@@ -40,4 +40,6 @@ sphinx-apidoc:
 	poetry run sphinx-apidoc -F -o docs/source ${PACKAGE_NAME}/
 
 sphinx:
+	@mkdir -p docs/source/_static
+	@cp pitaeeg.png docs/source/_static/ 2>/dev/null || true
 	poetry run sphinx-build docs/source docs/build
