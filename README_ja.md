@@ -3,7 +3,7 @@
 [![PyPI version](https://badge.fury.io/py/pitaeeg.svg)](https://badge.fury.io/py/pitaeeg)
 [![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Build and Deploy Documentation](https://github.com/pgv-inc/PitaEEGLSL/actions/workflows/docs.yml/badge.svg?branch=main)](https://github.com/pgv-inc/PitaEEGLSL/actions/workflows/docs.yml)
+[![Build and Deploy Documentation](https://github.com/pgv-inc/PitaEEGLSL/actions/workflows/docs.yml/badge.svg)](https://github.com/pgv-inc/PitaEEGLSL/actions/workflows/docs.yml)
 [![CodeQL](https://github.com/pgv-inc/PitaEEGLSL/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/pgv-inc/PitaEEGLSL/actions/workflows/github-code-scanning/codeql)
 [![Python package](https://github.com/pgv-inc/PitaEEGLSL/actions/workflows/pythonpackage.yml/badge.svg)](https://github.com/pgv-inc/PitaEEGLSL/actions/workflows/pythonpackage.yml)
 
