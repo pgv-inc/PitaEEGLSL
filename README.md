@@ -51,7 +51,7 @@ pip install pitaeeg
 - Poetry(pyproject.toml)
 
 ```toml
-pitaeeg = {git = "https://github.com/pgv-inc/PitaEEGLSL.git", rev = "0.7.0"}
+pitaeeg = {git = "https://github.com/pgv-inc/PitaEEGLSL.git", rev = "0.8.0"}
 ```
 
 ```bash
@@ -61,7 +61,7 @@ poetry install
 - pip
 
 ```bash
-pip install git+https://github.com/pgv-inc/PitaEEGLSL.git@0.7.0
+pip install git+https://github.com/pgv-inc/PitaEEGLSL.git@0.8.0
 ```
 
 ### Native Library Setup
