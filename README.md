@@ -1,6 +1,6 @@
 # PitaEEGLSL
 
-[![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
+[![Python 3.12+](https://img.shields.io/badge/python-3.12+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Documentation Status](https://readthedocs.org/projects/pitaeeglsl/badge/?version=latest)](https://pitaeeglsl.readthedocs.io/en/latest/?badge=latest)
 [![CodeQL](https://github.com/pgv-inc/PitaEEGLSL/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/pgv-inc/PitaEEGLSL/actions/workflows/github-code-scanning/codeql)
@@ -48,9 +48,9 @@ Downstream tools (LabRecorder, MNE, custom pipelines)
 
 ## Requirements
 
-- Python > 3.11, < 4.0
+- Python >= 3.12, < 4.0
 - make >= 4.3
-- Poetry >= 2.1 (for development)
+- Poetry >= 2.2 (for development)
 
 ---
 
