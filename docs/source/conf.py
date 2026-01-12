@@ -8,6 +8,12 @@
 
 import os
 import sys
+import warnings
+
+# Suppress RemovedInSphinx10Warning from sphinx_autodoc_typehints
+warnings.filterwarnings(
+    "ignore", category=DeprecationWarning, module="sphinx_autodoc_typehints"
+)
 
 from sphinx_pyproject import SphinxConfig
 
@@ -51,3 +57,14 @@ html_title = f"{project} {version} documentation"
 html_show_sourcelink = True
 html_show_sphinx = True
 html_show_copyright = True
+# html_permalinks_icon is deprecated in Sphinx 9.0+, use html_permalinks instead
+html_permalinks = True
+html_use_sri = False
+
+# Suppress warnings
+suppress_warnings = [
+    "ref.python",  # Suppress "more than one target found" warnings
+    "app.add_directive",  # Suppress sphinx_autodoc_typehints deprecation warnings
+    "app",  # Suppress all app-related warnings (including RemovedInSphinx10Warning)
+    "app.add_directive.duplicate_object",  # Suppress duplicate object description warnings
+]

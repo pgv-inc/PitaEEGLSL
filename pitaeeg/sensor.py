@@ -1,4 +1,9 @@
-"""Core sensor API for PitaEEGSensor."""
+"""Core sensor API for PitaEEG sensor devices.
+
+This module provides the main :class:`Sensor` class for communicating with
+PitaEEG sensor devices via the native C/C++ API library. It handles device
+discovery, connection, measurement, and data acquisition operations.
+"""
 
 from __future__ import annotations
 
@@ -84,9 +89,10 @@ def _load_library(explicit_path: str | None = None) -> ctypes.CDLL:  # noqa: C90
     to ensure proper DLL loading.
 
     Args:
-        explicit_path: Optional path to the library file or directory containing it.
-            If a directory is provided, standard library names are searched.
-            If None, default search locations are used.
+        explicit_path (str | None): Optional path to the library file or directory
+            containing it. If a directory is provided, standard library names
+            (pitaeeg.dll, libpitaeeg.so, etc.) are searched. If None, default
+            search locations are used.
 
     Returns:
         ctypes.CDLL: Loaded library handle ready for use.
@@ -184,7 +190,8 @@ def _bind_api(lib: ctypes.CDLL) -> ctypes.CDLL:
     type checking and parameter passing when calling native functions.
 
     Args:
-        lib: Raw ctypes.CDLL library handle loaded from the native library file.
+        lib (ctypes.CDLL): Raw ctypes.CDLL library handle loaded from the native
+            library file.
 
     Returns:
         ctypes.CDLL: The same library handle with all function signatures bound.
@@ -276,18 +283,37 @@ def _bind_api(lib: ctypes.CDLL) -> ctypes.CDLL:
 
 
 class Sensor:
-    """PitaEEGSensor interface.
+    """PitaEEG sensor interface for device communication and data acquisition.
+
+    The Sensor class provides a high-level Python interface for communicating
+    with PitaEEG sensor devices. It handles device discovery, connection,
+    measurement control, and data reception through the native C/C++ API library.
+
+    The class supports context manager protocol for automatic resource cleanup.
+    When used as a context manager, the sensor will automatically stop measurement,
+    disconnect devices, and release resources when exiting the context.
 
     Example:
-        >>> sensor = Sensor(port="COM3", library_path="path/to/lib")
-        >>> sensor.scan_devices(timeout=10)
-        >>> sensor.connect("HARU2-001")
-        >>> sensor.start_measurement()
-        >>> for data in sensor.receive_data():
-        ...     print(data)
-        >>> sensor.stop_measurement()
-        >>> sensor.disconnect()
-        >>> sensor.close()
+        Basic usage::
+
+            sensor = Sensor(port="COM3", library_path="path/to/lib")
+            sensor.scan_devices(timeout=10)
+            sensor.connect("HARU2-001")
+            sensor.start_measurement()
+            for data in sensor.receive_data():
+                print(data)
+            sensor.stop_measurement()
+            sensor.disconnect()
+            sensor.close()
+
+        Using as a context manager::
+
+            with Sensor(port="COM3") as sensor:
+                devices = sensor.scan_devices()
+                sensor.connect("HARU2-001")
+                sensor.start_measurement()
+                for data in sensor.receive_data():
+                    process_data(data)
 
     """
 
@@ -326,7 +352,12 @@ class Sensor:
         self._handle = handle
 
     def __enter__(self) -> Self:
-        """Context manager entry."""
+        """Context manager entry.
+
+        Returns:
+            Self: The Sensor instance itself.
+
+        """
         return self
 
     def __exit__(
@@ -342,9 +373,12 @@ class Sensor:
         and release all resources.
 
         Args:
-            exc_type: Exception type if an exception occurred, None otherwise.
-            exc_val: Exception value if an exception occurred, None otherwise.
-            exc_tb: Traceback if an exception occurred, None otherwise.
+            exc_type (type[BaseException] | None): Exception type if an exception
+                occurred, None otherwise.
+            exc_val (BaseException | None): Exception value if an exception occurred,
+                None otherwise.
+            exc_tb (TracebackType | None): Traceback if an exception occurred,
+                None otherwise.
 
         """
         self.close()
@@ -354,11 +388,12 @@ class Sensor:
 
         Initiates a device scan operation to discover PitaEEG sensors that are
         within communication range. The scan continues until devices are found
-        or the timeout expires.
+        or the timeout expires. The scan will stop early if devices are found
+        before the timeout.
 
         Args:
-            timeout: Maximum time to wait for devices in seconds (default: 10.0).
-                The scan will stop early if devices are found before the timeout.
+            timeout (float): Maximum time to wait for devices in seconds.
+                Defaults to 10.0 seconds.
 
         Returns:
             list[dict[str, str]]: List of dictionaries containing device information.
@@ -414,11 +449,11 @@ class Sensor:
         :meth:`scan_devices` to discover available device names.
 
         Args:
-            device_name: Name of the device to connect to (e.g., "HARU2-001").
+            device_name (str): Name of the device to connect to (e.g., "HARU2-001").
                 This should match one of the device names returned by
                 :meth:`scan_devices`.
-            scan_timeout: Maximum time to wait for the device to be found
-                in seconds (default: 10.0).
+            scan_timeout (float): Maximum time to wait for the device to be found
+                in seconds. Defaults to 10.0 seconds.
 
         Raises:
             SensorConnectionError: If the sensor is not initialized, device
@@ -481,7 +516,8 @@ class Sensor:
 
         Returns:
             int: Device time in milliseconds since epoch (Unix timestamp * 1000).
-                This timestamp represents when the sensor device started measurement.
+                This timestamp represents when the sensor device started measurement
+                and can be used for time synchronization with other data streams.
 
         Raises:
             MeasurementError: If the sensor is not initialized, no device is
@@ -535,6 +571,14 @@ class Sensor:
             MeasurementError: If the sensor is not initialized or measurement
                 is not started.
 
+        Example:
+            >>> sensor.start_measurement()
+            >>> for data in sensor.receive_data():
+            ...     print(f"Channels: {data.data}, Battery: {data.batlevel}%")
+            ...     if some_condition:
+            ...         sensor.stop_measurement()
+            ...         break
+
         """
         if self._handle is None:
             msg = "Sensor not initialized"
@@ -561,10 +605,10 @@ class Sensor:
         Stops measurement only if the device is initialized and currently
         measuring. If no measurement is active, this function does nothing.
 
-        Raises:
-            MeasurementError: Not raised directly here, but subsequent API
-                calls depending on measurement state may fail if measurement
-                was never started.
+        Note:
+            This method does not raise exceptions directly, but subsequent API
+            calls depending on measurement state may fail if measurement
+            was never started.
 
         """
         if self._handle is not None and self._measuring:
@@ -577,9 +621,10 @@ class Sensor:
         If a measurement is active, it will be stopped first. After
         disconnecting, the internal connection state is cleared.
 
-        Raises:
-            SensorConnectionError: If the sensor was never connected.
-                (i.e., `_connected_device` is None)
+        Note:
+            This method does not raise exceptions directly. If the sensor was
+            never connected (i.e., `_connected_device` is None), this method
+            does nothing.
 
         """
         if self._handle is not None and self._connected_device is not None:
@@ -595,7 +640,7 @@ class Sensor:
         best-effort and any internal errors are ignored. This function
         never raises exceptions.
 
-        Notes:
+        Note:
             - If measurement is active, it will be stopped.
             - If a device is connected, it will be disconnected.
             - If a handle is present, it will be terminated.
@@ -611,16 +656,18 @@ class Sensor:
             self._handle = None
 
     def get_battery_remaining_time(self) -> float:
-        """Return remaining battery time.
+        """Get remaining battery time.
 
-        The returned value represents the estimated remaining battery time in minutes.
+        Retrieves the estimated remaining battery time from the connected sensor
+        device. The returned value represents the estimated remaining battery time
+        in minutes.
 
         Returns:
             float: Remaining battery time in minutes.
 
         Raises:
             MeasurementError: If the sensor is not initialized or if the operation
-            fails.
+                fails.
 
         """
         if self._handle is None:
@@ -639,8 +686,9 @@ class Sensor:
         return float(value.value)
 
     def get_version(self) -> float:
-        """Return sensor firmware version.
+        """Get sensor firmware version.
 
+        Retrieves the firmware version from the connected sensor device.
         The version is returned as a floating-point number.
 
         Returns:
@@ -669,11 +717,15 @@ class Sensor:
     def get_state(self) -> tuple[int, int]:
         """Get the current sensor state and error code.
 
+        Retrieves the current operating state and error status from the connected
+        sensor device. This information can be used to diagnose device issues and
+        monitor measurement status.
+
         Returns:
             tuple[int, int]: A tuple ``(state, error)`` where:
 
             **Sensor State (SENSOR_STATE)**
-            Represents the operating status of the EEG device.
+            Represents the operating status of the EEG device:
 
             - INITIAL (0): Initial state
             - WAIT_CONNECT (1): Waiting for device connection
@@ -685,7 +737,7 @@ class Sensor:
             Multiple states may be combined using a logical OR.
 
             **Sensor Error (SENSOR_ERROR)**
-            Represents abnormal conditions detected by the device.
+            Represents abnormal conditions detected by the device:
 
             - ELECTRODE_NOT_CONNECTED (0x01): Electrode sheet not connected
             - AFE_COMM_ERROR (0x02): Hardware communication error ※
@@ -722,15 +774,25 @@ class Sensor:
         return int(state.value), int(err.value)
 
     def get_contact_resistance(self) -> ContactResistance:
-        """Retrieve electrode contact-resistance data.
+        """Get electrode contact resistance data.
+
+        Retrieves the electrical contact resistance measurements for each electrode
+        from the connected sensor device. Contact resistance is a measure of the
+        electrical impedance between the electrode and the skin. Lower resistance
+        values indicate better electrode contact.
 
         Returns:
             ContactResistance: Structure containing raw resistance values
-                (e.g., ChZ, ChR, ChL). The value is expressed in ohms (Ω).
+                (ChZ, ChR, ChL). The values are expressed in ohms (Ω).
+                Lower values (typically < 10 kΩ) indicate good contact.
 
         Raises:
             MeasurementError: If the sensor is not initialized or the
                 native API call fails.
+
+        Note:
+            High resistance values (> 50 kΩ) may indicate poor electrode contact
+            and can result in increased noise or signal artifacts in the EEG data.
 
         """
         if self._handle is None:

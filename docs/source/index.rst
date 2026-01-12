@@ -1,58 +1,18 @@
-.. pitaeeg documentation master file
+.. pitaeeg documentation master file, created by
+   sphinx-quickstart on Mon Jan 12 11:13:50 2026.
+   You can adapt this file completely to your liking, but it should at least
+   contain the root `toctree` directive.
 
-Welcome to pitaeeg's documentation!
-====================================
+pitaeeg documentation
+=====================
 
-**pitaeeg** is a Python package that provides an easy-to-use interface for communicating with PitaEEG sensor devices.
+Add your content using ``reStructuredText`` syntax. See the
+`reStructuredText <https://www.sphinx-doc.org/en/master/usage/restructuredtext/index.html>`_
+documentation for details.
 
-System Architecture
--------------------
-
-.. image:: _static/pitaeeg.png
-   :alt: System Architecture
-   :align: center
-   :width: 800px
-
-.. note::
-   This package requires both the **PitaEEG API native library** and **PitaEEG Sensor hardware**, which are proprietary and require a license. Please contact support@pgv.co.jp for library licensing information.
-
-Quick Start
------------
-
-Install the package:
-
-.. code-block:: bash
-
-   pip install pitaeeg
-
-Basic usage:
-
-.. code-block:: python
-
-   from pitaeeg import Sensor
-
-   with Sensor(port="COM3") as sensor:
-       sensor.connect("HARU2-001", scan_timeout=10.0)
-       devicetime_ms = sensor.start_measurement()
-       
-       for data in sensor.receive_data():
-           print(f"Channels: {data.data}, Battery: {data.batlevel}%")
-           break
-
-For more examples, see the `examples <https://github.com/pgv-inc/PitaEEGLSL/tree/main/examples>`_ directory.
-
-Contents
---------
 
 .. toctree::
    :maxdepth: 4
-   :caption: API Reference:
+   :caption: Contents:
 
    pitaeeg
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`

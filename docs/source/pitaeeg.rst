@@ -11,7 +11,6 @@ pitaeeg.exceptions module
    :members:
    :show-inheritance:
    :undoc-members:
-   :no-index:
 
 pitaeeg.sensor module
 ---------------------
@@ -28,7 +27,6 @@ pitaeeg.types module
    :members:
    :show-inheritance:
    :undoc-members:
-   :no-index:
 
 Module contents
 ---------------
@@ -37,4 +35,3 @@ Module contents
    :members:
    :show-inheritance:
    :undoc-members:
-   :exclude-members: DeviceInfo, ReceiveData2, SensorParam, TimesetParam, PitaEEGSensorError, LibraryNotFoundError, InitializationError, ScanError, SensorConnectionError, MeasurementError

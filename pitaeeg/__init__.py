@@ -8,6 +8,9 @@ The main entry point is the :class:`Sensor` class, which manages the
 connection to a sensor device and provides methods for scanning devices,
 connecting, starting/stopping measurements, and receiving EEG data.
 
+The library is designed to work with LabStreamingLayer (LSL) for real-time
+data streaming and synchronization with other neuroscience tools.
+
 Example:
     Basic usage of the Sensor class::
 
@@ -43,9 +46,21 @@ Example:
             for data in sensor.receive_data():
                 process_data(data)
 
+Note:
+    This library requires the native PitaEEG API library to function.
+    The library file must be placed in the appropriate platform-specific
+    directory (libs/macos/arm64/, libs/linux/, libs/windows/) or provided
+    via the library_path parameter.
+
+See Also:
+    - `Sensor`: Main sensor interface class
+    - `pitaeeg.types.DeviceInfo`: Device information structure
+    - `pitaeeg.types.ReceiveData2`: EEG data structure
+    - `pitaeeg.types.ContactResistance`: Contact resistance measurements
+
 """
 
-__version__ = "0.17.0"
+__version__ = "0.18.0"
 __title__ = "pitaeeg"
 __description__ = "PitaEEG LSL(LabStreamingLayer) for Python"
 __url__ = "https://github.com/pgv-inc/PitaEEGLSL"
@@ -61,6 +76,7 @@ from pitaeeg.exceptions import (
 )
 from pitaeeg.sensor import Sensor
 from pitaeeg.types import (
+    ContactResistance,
     DeviceInfo,
     ReceiveData2,
     SensorParam,
@@ -68,6 +84,7 @@ from pitaeeg.types import (
 )
 
 __all__ = [
+    "ContactResistance",
     "DeviceInfo",
     "InitializationError",
     "LibraryNotFoundError",
