@@ -60,7 +60,7 @@ See Also:
 
 """
 
-__version__ = "0.18.0"
+__version__ = "0.19.0"
 __title__ = "pitaeeg"
 __description__ = "PitaEEG LSL(LabStreamingLayer) for Python"
 __url__ = "https://github.com/pgv-inc/PitaEEGLSL"

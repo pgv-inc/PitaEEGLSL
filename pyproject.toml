@@ -1,6 +1,6 @@
 [project]
 name = "pitaeeg"
-version = "0.18.0"
+version = "0.19.0"
 description = "PitaEEG LSL(LabStreamingLayer) for Python"
 readme = "README.md"
 requires-python = ">=3.12,<4.0"
@@ -29,7 +29,7 @@ Issues = "https://github.com/pgv-inc/PitaEEGLSL/issues"
 
 [tool.poetry]
 name = "pitaeeg"
-version = "0.18.0"
+version = "0.19.0"
 description = "PitaEEG LSL(LabStreamingLayer) for Python"
 authors = ["kezure <3447723+kezure@users.noreply.github.com>"]
 license = "MIT"
@@ -49,7 +49,7 @@ python-dotenv = "^1.2.1"
 tbvaccine = "^0.3.1"
 sphinx = "^9.1.0"
 sphinx-autodoc-typehints = "^3.6.2"
-sphinx-rtd-theme = "^3.1.0rc2"
+sphinx-rtd-theme = "^3.1.0"
 sphinx-pyproject = "^0.3.0"
 numpy = "^2.4.0"
 matplotlib = "^3.10.8"
